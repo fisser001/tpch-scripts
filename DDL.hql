@@ -87,6 +87,7 @@ drop table s_supplier_tmp_star;
 drop table p_part_star_tmp;
 drop table ps_partsupp_star_tmp;
 
+
 select * from c_customer_tmp limit 2;
 select * from l_lineitem_tmp limit 2;
 select * from n_nation_tmp limit 2;
