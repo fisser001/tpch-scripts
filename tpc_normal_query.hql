@@ -32,6 +32,40 @@ where l_shipdate <= date '1998-12-01' - interval '90' day
 group by l_returnflag, l_linestatus 
 order by l_returnflag, l_linestatus;
 
+-- Query 1 denormal hive ok
+select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, 
+sum(l_extendedprice*(1-l_discount)) as sum_disc_price, 
+sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, 
+avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, 
+avg(l_discount) as avg_disc, count(*) as count_order 
+from denormalized 
+where l_shipdate <= date '1998-12-01' - interval '90' day 
+group by l_returnflag, l_linestatus 
+order by l_returnflag, l_linestatus;
+
+--> Query 1 denormal / presto --> ok
+select
+l_returnflag,
+l_linestatus,
+sum(l_quantity) as sum_qty,
+sum(l_extendedprice) as sum_base_price,
+sum(l_extendedprice*(1-l_discount)) as sum_disc_price,
+sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,
+avg(l_quantity) as avg_qty,
+avg(l_extendedprice) as avg_price,
+avg(l_discount) as avg_disc,
+count(*) as count_order
+from
+denormalized
+where
+l_shipdate <= date '1998-12-01' - interval '90' day
+group by
+l_returnflag,
+l_linestatus
+order by
+l_returnflag,
+l_linestatus;
+
 --Query 2 raw / Presto --> ok (angepasst limit 100)
 select
 s_acctbal,
@@ -97,6 +131,9 @@ and n_regionkey = r_regionkey
 and r_name = 'EUROPE') 
 order by s_acctbal desc,n_name,s_name,p_partkey limit 100;
 
+--Query 2 denormal hive 
+
+
 --Query 3 raw / presto angepasst limit 10
 select
 l_orderkey,
@@ -139,12 +176,12 @@ order by revenue desc, o_orderdate limit 10;
 set hive.auto.convert.join=true;
 --set hive.auto.convert.join.noconditionaltask=false;
 
- -- Query 3 denormal?   
+ -- Query 3 denormal ok
 select o_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, o_orderdate, o_shippriority 
-from l_lineitem
+from denormalized
 where c_mktsegment = 'BUILDING' and o_orderdate < date '1995-03-15' and l_shipdate > date '1995-03-15' 
 group by o_orderkey, o_orderdate, o_shippriority 
-order by revenue desc, o_orderdate;
+order by revenue desc, o_orderdate limit 10;
 
 --Query 4 raw / presto
 select
@@ -177,9 +214,9 @@ and exists (select * from l_lineitem where l_orderkey = o_orderkey and l_commitd
 group by o_orderpriority 
 order by o_orderpriority;
 
--- Query 4 denormal?
+-- Query 4 denormal ok
 select o_orderpriority, count (distinct o_orderkey) as order_count 
-from l_lineitem
+from denormalized
 where o_orderdate >= date '1993-07-01' and o_orderdate < date '1993-07-01' + interval '3' month 
 and l_commitdate < l_receiptdate 
 group by o_orderpriority 
@@ -223,6 +260,21 @@ group by n_name
 order by revenue desc;
 set hive.auto.convert.join=true;
 
+--> Query 5 denorm ok
+select
+n_name,
+sum(l_extendedprice * (1 - l_discount)) as revenue
+from
+denormalized
+where
+r_name = 'ASIA'
+and o_orderdate >= date '1994-01-01'
+and o_orderdate < date '1994-01-01' + interval '1' year
+group by
+n_name
+order by
+revenue desc;
+
 -->Query 6 raw / Presto
 select
 sum(l_extendedprice*l_discount) as revenue
@@ -239,6 +291,17 @@ select sum(l_extendedprice * l_discount) as revenue
 from l_lineitem
 where l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year 
 and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;
+
+--Query 6 denormal ok
+select
+sum(l_extendedprice*l_discount) as revenue
+from
+denormalized
+where
+l_shipdate >= date '1994-01-01'
+and l_shipdate < date '1994-01-01' + interval '1' year
+and l_discount between 0.06 - 0.01 and 0.06 + 0.01
+and l_quantity < 24;
 
 --Query 7 raw / presto
 select
@@ -303,13 +366,15 @@ group by supp_nation,cust_nation,l_year
 order by supp_nation, cust_nation, l_year;
 set hive.auto.convert.join=true;
 
---Query 7 denorm
-select sum(l_extendedprice * (1 - l_discount)) as revenue, s_n_name, c_n_name,  year(l_shipdate) as l_year 
-from l_lineitem
-where ((s_n_name = 'FRANCE' and c_n_name = 'GERMANY') or (s_n_name = 'GERMANY' and c_n_name = 'FRANCE')) 
+--Query 7 denorm ok
+select  n2_name, n_name, 
+ year(l_shipdate) as l_year, sum(l_extendedprice * (1 - l_discount)) as revenue
+from denormalized
+where ((n2_name = 'FRANCE' and n_name = 'GERMANY') or (n2_name = 'GERMANY' 
+and n_name = 'FRANCE')) 
 and l_shipdate between date '1995-01-01' and date '1996-12-31' 
-group by s_n_name, c_n_name, year(l_shipdate) 
-order by s_n_name, c_n_name, l_year;
+group by n2_name, n_name, year(l_shipdate) 
+order by n2_name, n_name, l_year;
 
 --Query 8 raw / presto
 select
@@ -374,10 +439,12 @@ and p_type = 'ECONOMY ANODIZED STEEL') as all_nations
 group by o_year
 order by o_year;
 
---Query 8 denorm
+--Query 8 denorm ok
 select o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share 
-from ( select year(o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume, s_n_name as nation 
-from l_lineitem where c_r_name = 'AMERICA' and o_orderdate between date '1995-01-01' and date '1996-12-31' 
+from ( select year(o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume, 
+n2_name as nation 
+from denormalized where r_name = 'AMERICA' and o_orderdate between date '1995-01-01' 
+and date '1996-12-31' 
 and p_type = 'ECONOMY ANODIZED STEEL') as all_nations 
 group by o_year 
 order by  o_year;
@@ -437,6 +504,28 @@ group by nation, o_year
 order by nation, o_year desc;
 set hive.auto.convert.join=true;
 
+--Query 9 denormal ok
+select
+nation,
+o_year,
+sum(amount) as sum_profit
+from (
+select
+n2_name as nation,
+extract(year from o_orderdate) as o_year,
+l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount
+from
+denormalized
+where
+p_name like '%green%'
+) as profit
+group by
+nation,
+o_year
+order by
+nation,
+o_year desc;
+
 --Query 10 raw / presto
 select
 c_custkey,
@@ -482,11 +571,13 @@ order by revenue desc limit 20;
 set hive.auto.convert.join=true;
 
 
---Query 10 denorm
-select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue, c_acctbal, c_n_name, c_address, c_phone, c_comment
-from l_lineitem 
-where o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month and l_returnflag = 'R' 
-group by c_custkey, c_name, c_acctbal, c_phone, c_n_name, c_address, c_comment 
+--Query 10 denorm ok
+select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue, c_acctbal, 
+n_name, c_address, c_phone, c_comment
+from denormalized 
+where o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month 
+and l_returnflag = 'R' 
+group by c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment 
 order by revenue 
 desc limit 20;
 
@@ -540,6 +631,9 @@ order by
 value desc;
 set hive.strict.checks.cartesian.product=true;
 
+--Query 11 denorm
+
+
 --Query 12 raw / presto
 select
 l_shipmode,
@@ -581,6 +675,34 @@ group by l_shipmode
 order by l_shipmode;
 set hive.auto.convert.join=true;
 
+--Query 12 denormal ok
+select
+l_shipmode,
+sum(case
+when o_orderpriority ='1-URGENT'
+or o_orderpriority ='2-HIGH'
+then 1
+else 0
+end) as high_line_count,
+sum(case
+when o_orderpriority <> '1-URGENT'
+and o_orderpriority <> '2-HIGH'
+then 1
+else 0
+end) as low_line_count
+from
+denormalized
+where
+l_shipmode in ('MAIL', 'SHIP')
+and l_commitdate < l_receiptdate
+and l_shipdate < l_commitdate
+and l_receiptdate >= date '1994-01-01'
+and l_receiptdate < date '1994-01-01' + interval '1' year
+group by
+l_shipmode
+order by
+l_shipmode;
+
 --Query 13 raw / presto
 select
 c_count, count(*) as custdist
@@ -613,6 +735,9 @@ group by c_custkey) as c_orders
 group by c_count
 order by custdist desc, c_count desc;
 
+--Query 13 denormal 
+
+
 --Query 14 raw presto
 select
 100.00 * sum(case
@@ -632,6 +757,21 @@ and l_shipdate < date '1995-09-01' + interval '1' month;
 select 100.00 * sum(case when p_type like 'PROMO%' then l_extendedprice * (1 - l_discount) else 0 end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue
 from l_lineitem, p_part 
 where l_partkey = p_partkey and l_shipdate >= date '1995-09-01' and l_shipdate < date '1995-09-01' + interval '1' month;
+
+--Query 14 denormal ok
+select
+100.00 * sum(case
+when p_type like 'PROMO%'
+then l_extendedprice*(1-l_discount)
+else 0
+end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue
+from
+denormalized
+where
+l_partkey = p_partkey
+and l_shipdate >= date '1995-09-01'
+and l_shipdate < date '1995-09-01' + interval '1' month;
+
 
 --Query 15 raw / presto --> nicht ok --> views are not supported
 view v_revenue (supplier_no, total_revenue) as
@@ -672,14 +812,37 @@ drop view v_revenue;
 --Query 15 normal --> ok --> angepasst
 create view v_revenue (supplier_no, total_revenue) as
 select l_suppkey,sum(l_extendedprice * (1 - l_discount))
-from l_lineitem	
+from denormalized	
 where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month
 group by l_suppkey;
 
 select s_suppkey,s_name,s_address,s_phone,max(total_revenue) as total_revenue
-from s_supplier, v_revenue 
+from denormalized, v_revenue 
 where s_suppkey = supplier_no
 group by s_suppkey,s_name,s_address,s_phone
+order by total_revenue desc limit 1;
+
+--Query 15 denormal hive ok ; presto not working because of view
+set hive.auto.convert.join=false;
+create view v_revenue_denorm (supplier_no, total_revenue) as
+select l_suppkey,sum(l_extendedprice * (1 - l_discount))
+from denormalized	
+where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month
+group by l_suppkey;
+
+select s_suppkey,s_name,s_address,s_phone,max(total_revenue) as total_revenue
+from denormalized, v_revenue_denorm 
+where s_suppkey = supplier_no
+group by s_suppkey,s_name,s_address,s_phone
+order by total_revenue desc limit 1;
+set hive.auto.convert.join=true;
+
+--Query 15 denormal for presto ok aber angepasst
+select l_suppkey as supplier_no,sum(l_extendedprice * (1 - l_discount)) as total_revenue,
+s_name,s_address,s_phone
+from denormalized	
+where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month
+group by l_suppkey, s_name,s_address,s_phone
 order by total_revenue desc limit 1;
 
 
@@ -727,9 +890,9 @@ and p_size in (49, 14, 23, 45, 19, 3, 36, 9)
 group by p_brand,p_type,p_size
 order by supplier_cnt desc, p_brand,p_type, p_size limit 20000;
 
---Query 16 denorm
+--Query 16 denorm ok
 select p_brand, p_type, p_size, count(distinct s_suppkey) as supplier_cnt 
-from l_lineitem 
+from denormalized 
 where p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%' 
 and p_size in (49, 14, 23, 45, 19, 3, 36, 9) and s_comment not like '%Customer%Complaints%'
 group by p_brand, p_type, p_size 
@@ -761,6 +924,22 @@ and l_quantity < (
 select 0.2 * avg(l_quantity)
 from l_lineitem
 where l_partkey = p_partkey);
+
+--Query 17 denorm ok
+select
+sum(l_extendedprice) / 7.0 as avg_yearly
+from
+denormalized a
+where
+p_brand = 'Brand#23' and p_container = 'MED BOX' 
+and l_quantity < (
+select
+0.2 * avg(l_quantity)
+from
+denormalized b
+where
+a.l_partkey = b.p_partkey
+);
 
 
 --Query 18 raw / presto
@@ -810,9 +989,9 @@ and o_orderkey = l_orderkey
 group by c_name,c_custkey, o_orderkey, o_orderdate,o_totalprice
 order by o_totalprice desc, o_orderdate limit 100;
 
---Query 18 denorm
+--Query 18 denorm ok
 select c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum(l_quantity) 
-from l_lineitem
+from denormalized
 group by c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice 
 having sum(l_quantity) > 300 
 order by o_totalprice desc, o_orderdate;
@@ -868,9 +1047,9 @@ p_partkey = l_partkey and p_brand = 'Brand#34' and p_container in ('LG CASE', 'L
 and l_quantity >= 20 and l_quantity <= 20 + 10 and p_size between 1 and 15 
 and l_shipmode in ('AIR', 'AIR REG') and l_shipinstruct = 'DELIVER IN PERSON');
 
---Query 19 denorm
+--Query 19 denorm ok
 select sum(l_extendedprice * (1 - l_discount) ) as revenue 
-from l_lineitem
+from denormalized
 where ( p_brand = 'Brand#12'and p_container in ( 'SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') 
 and l_quantity >= 1 and l_quantity <= 1 + 10 and p_size between 1 and 5 and l_shipmode in ('AIR', 'AIR REG') 
 and l_shipinstruct = 'DELIVER IN PERSON') or (p_brand = 'Brand#23' 
@@ -932,6 +1111,10 @@ where l_partkey = ps_partkey and l_suppkey = ps_suppkey and l_shipdate >= date '
 and l_shipdate < date '1994-01-01' + interval '1' year))
 and s_nationkey = n_nationkey and n_name = 'CANADA'
 order by s_name;
+
+--Query 20 denormal
+
+
 
 --Query 21 raw / presto
 select
@@ -1011,6 +1194,43 @@ order by
 limit 100;
 set hive.auto.convert.join=true;
 
+--Query 21 denormal ok
+select
+s_name,
+count(*) as numwait
+from
+denormalized l1
+where 
+o_orderstatus = 'F'
+and l1.l_receiptdate > l1.l_commitdate
+and exists (
+select
+*
+from
+denormalized l2
+where
+l2.l_orderkey = l1.l_orderkey
+and l2.l_suppkey <> l1.l_suppkey
+)
+and not exists (
+select
+*
+from
+denormalized l3
+where
+l3.l_orderkey = l1.l_orderkey
+and l3.l_suppkey <> l1.l_suppkey
+and l3.l_receiptdate > l3.l_commitdate
+)
+and s_nationkey = n2_nationkey
+and n2_name = 'SAUDI ARABIA'
+group by
+s_name
+order by
+numwait desc,
+s_name
+limit 100;
+
 --Query 22 raw / presto
 select
 cntrycode,
@@ -1023,7 +1243,7 @@ c_acctbal
 from
 c_customer
 where
-and substring (c_phone from 1 for 2) in
+substring (c_phone from 1 for 2) in
 ('13','31','23','29','30','18','17')
 and c_acctbal > (
 select
@@ -1082,3 +1302,42 @@ where c_acctbal > avg_acctbal
 group by cntrycode
 order by cntrycode;
 set hive.strict.checks.cartesian.product=true;
+
+
+--Query 22 denormal ok aber leichte abweichungen im ergebnis --> not working in hive Unsupported SubQuery Expression 'c_custkey': Only 1 SubQuery expression is supported
+select
+cntrycode,
+count(*) as numcust,
+sum(c_acctbal) as totacctbal
+from (
+select
+substring(a.c_phone, 1,2) as cntrycode,
+a.c_acctbal
+from
+denormalized a
+where
+ substring(a.c_phone, 1,2) in
+('13','31','23','29','30','18','17')
+and a.c_acctbal > (
+select
+avg(b.c_acctbal)
+                from
+                denormalized b
+                where
+                b.c_acctbal > 0.00
+                and substring(a.c_phone, 1,2) in
+                ('13','31','23','29','30','18','17')
+                )
+        and not exists (
+                select
+                *
+                from
+                denormalized c
+                where
+                a.o_custkey = c.c_custkey
+                )
+) as custsale
+group by
+cntrycode
+order by
+cntrycode;
