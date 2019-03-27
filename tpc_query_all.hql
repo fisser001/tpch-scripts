@@ -101,7 +101,7 @@ order by
 l_returnflag,
 l_linestatus;
 
---> Query 1 star ok
+--> Query 1 star impala ok
 select
 l_returnflag,
 l_linestatus,
@@ -124,7 +124,7 @@ order by
 l_returnflag,
 l_linestatus;
 
---> Query 1 star impala ok
+--> Query 1 star  ok
 select
 l_returnflag,
 l_linestatus,
@@ -139,8 +139,7 @@ count(*) as count_order
 from
 lo_lineitem_orders_star
 where
-to_date(l_shipdate) <= to_date('1998-12-01' - interval '90' day
-group by
+to_date(l_shipdate) <= date'1998-12-01' - interval '90' day)
 l_returnflag,
 l_linestatus
 order by
@@ -760,7 +759,7 @@ and to_date(l_shipdate) between to_date('1995-01-01') and to_date('1996-12-31')
 group by n2_name, n_name, year(to_date(l_shipdate))
 order by n2_name, n_name, l_year;
 
---Query 7 star  ok
+--Query 7 star impala  ok
 select
 supp_nation,
 cust_nation,
@@ -793,7 +792,7 @@ supp_nation,
 cust_nation,
 l_year;
 
---Query 7 star impala ok
+--Query 7 star  ok
 select
 supp_nation,
 cust_nation,
@@ -1476,6 +1475,8 @@ where part_value > total_value * 0.0001
 order by
 value desc;
 
+drop view q11_part_tmp_cached;
+drop view q11_sum_tmp_cached;
 
 --Query 12 raw / presto / drill ok
 select
@@ -2182,7 +2183,7 @@ l_partkey = p_partkey
 );
 
 
---Query 18 raw / presto / drill ok
+--Query 18 raw / presto / drill impala ok
 select
 c_name,
 c_custkey,
