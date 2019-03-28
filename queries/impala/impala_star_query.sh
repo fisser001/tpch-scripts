@@ -2,7 +2,8 @@
 
 if [ ! -d $1 ] && [ ! -d $2 ]; then
 mkdir -p opt/data/results
-resultPath="/opt/data/results/impala_star_query_sf"$1"_result.txt"
+cd opt/data/results
+resultPath=impala_star_query_sf"$1"_result.txt
 rm -f $resultPath
 touch $resultPath
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------" |& tee -a $resultPath
