@@ -4,6 +4,7 @@ if [ ! -d $1 ] && [ ! -d $2 ]; then
 mkdir -p opt/data/results
 resultPath="/opt/data/results/impala_normal_query_sf"$1"_result.txt"
 rm -f $resultPath
+touch $resultPath
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------" |& tee -a $resultPath
 echo "-------------------------------------- "$resultPath" ---------------------------------"|& tee -a $resultPath
 
