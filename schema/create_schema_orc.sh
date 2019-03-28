@@ -162,6 +162,8 @@ echo "-------------------------------------- Start creating denormalized -------
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/opt/data/sf1/denorm/' OVERWRITE INTO TABLE denormalized_tmp;"
 echo ""
+echo rm -rf /opt/data/sf1/denorm/*
+echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; Create Table denormalized stored as orc as select * from denormalized_tmp;"
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table denormalized_tmp;"
