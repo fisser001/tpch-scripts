@@ -3,13 +3,13 @@
 if [ ! -d $1 ] && [ ! -d $2 ]; then
 mkdir -p results
 cd results
-resultPath=drill_normal_query_sf"$1"_result.txt
+resultPath=presto_star_query_sf"$1"_result.txt
 rm -f $resultPath
 touch $resultPath
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------"|& tee -a $resultPath|& tee -a $resultPath
 echo "-------------------------------------- "$resultPath" ---------------------------------"|& tee -a $resultPath|& tee -a $resultPath
 
-echo "-------------------------------------- DRILL QUERY NORMALIZED ---------------------------------"|& tee -a $resultPath|& tee -a $resultPath
+echo "-------------------------------------- PRESTO QUERY STAR ---------------------------------"|& tee -a $resultPath|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
