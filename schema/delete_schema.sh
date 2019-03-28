@@ -21,7 +21,7 @@ fi
 
 if [ "$1" = "denormal" ] || [ "$1" = "all" ]; then
 echo "-------------------------------------- Start deleting tables for schema denormalized ---------------------------------"
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table denormalized_tmp;"
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table denormalized;"
 echo ""
 echo "-------------------------------------- Finished deleting tables for schema denormalized ---------------------------------"
 echo ""

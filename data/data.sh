@@ -10,7 +10,7 @@ echo "-------------------------------------- Path: /opt/data/ ------------------
 echo "-------------------------------------- LOAD DATA  ----------------------------------------------"
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')
 echo ""
-wget --no-check-certificate -O sf$1.zip $2
+wget --no-check-certificate -O sf$1.zip "$2"
 echo "-------------------------------------- DATA HAS BEEN LOADED  ----------------------------------------------"
 echo ""
 echo "-------------------------------------- UNZIP DATA  ----------------------------------------------"
@@ -30,6 +30,6 @@ echo "-------------------------------------- DELETE DATA FINISHED --------------
 
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. Paramter 2 for download url"
-echo "Example ./data.sh 1 https://blablabla.de:444/sgare.cgi/gdjsj"
+echo "Example ./data.sh 1 \"https://blablabla.de:444/sgare.cgi/gdjsj\""
 exit 2
 fi
