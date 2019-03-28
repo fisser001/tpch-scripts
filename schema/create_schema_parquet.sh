@@ -183,7 +183,7 @@ echo ""
 else
 echo "Please specify the parameters. One of the following parameters can be specified for the first parameter. Second paramter defines the scale factor."
 echo "all or normal or star or denormal"
-echo "Example: normal 1"
+echo "Example: ./create_schema_parquet normal 1"
 fi
 
 
