@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ ! -d $1 ] && [ ! -d $2 ]; then
-mkdir -p opt/data/results
-cd opt/data/results
+mkdir -p results
+cd results
 resultPath=impala_denormal_query_sf"$1"_result.txt
 rm -f $resultPath
 touch $resultPath
