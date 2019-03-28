@@ -91,7 +91,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED  QUERY 11."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-impala-shell -q "create view q11_part_tmp_cached as select ps_partkey,sum(ps_supplycost * ps_availqty) as part_value from ps_partsupp,s_supplier,n_nation where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = 'GERMANY' group by ps_partkey;  create view q11_sum_tmp_cached as select sum(part_value) as total_value from q11_part_tmp_cached;  select ps_partkey, part_value as value from (select ps_partkey,part_value,total_value  from q11_part_tmp_cached join q11_sum_tmp_cached ) a where part_value > total_value * 0.0001 order by value desc;"|& tee -a $resultPath
+impala-shell -q "create view q11_part_tmp_cached as select ps_partkey,sum(ps_supplycost * ps_availqty) as part_value from ps_partsupp,s_supplier,n_nation where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = 'GERMANY' group by ps_partkey;  create view q11_sum_tmp_cached as select sum(part_value) as total_value from q11_part_tmp_cached;  select ps_partkey, part_value as value from (select ps_partkey,part_value,total_value  from q11_part_tmp_cached join q11_sum_tmp_cached ) a where part_value > total_value * 0.0001 order by value desc; drop view q11_part_tmp_cached; drop view q11_sum_tmp_cached;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 11."$i"----------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -119,7 +119,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED  QUERY 15."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-impala-shell -q "create view v_revenue (supplier_no, total_revenue) as select l_suppkey, sum(l_extendedprice * (1 - l_discount)) from l_lineitem where to_date(l_shipdate) >= to_date('1996-01-01') and to_date(l_shipdate) < to_date(date_add(cast('1996-01-01' as timestamp), interval 3 month)) group by l_suppkey;  select s_suppkey, s_name, s_address, s_phone, total_revenue from s_supplier, v_revenue where s_suppkey = supplier_no and total_revenue = ( select max(total_revenue) from v_revenue ) order by s_suppkey;"|& tee -a $resultPath
+impala-shell -q "create view v_revenue (supplier_no, total_revenue) as select l_suppkey, sum(l_extendedprice * (1 - l_discount)) from l_lineitem where to_date(l_shipdate) >= to_date('1996-01-01') and to_date(l_shipdate) < to_date(date_add(cast('1996-01-01' as timestamp), interval 3 month)) group by l_suppkey;  select s_suppkey, s_name, s_address, s_phone, total_revenue from s_supplier, v_revenue where s_suppkey = supplier_no and total_revenue = ( select max(total_revenue) from v_revenue ) order by s_suppkey; drop view v_revenue;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 15."$i"----------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath

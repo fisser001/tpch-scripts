@@ -142,7 +142,7 @@ echo "-------------------------------------- Finished creating part star -------
 echo ""
 
 echo "-------------------------------------- Start creating partsupp star ---------------------------------"
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; CREATE TABLE ps_partsupp_star_tmp (ps_partkey string , ps_suppkey string , ps_availqty int , ps_supplycost double , ps_comment string , ps_timestamp timestamp) ROW FORMAT DELIMITED FIELDS TERMINATED BY "|" STORED AS TEXTFILE;"
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; CREATE TABLE ps_partsupp_star_tmp (ps_partkey string , ps_suppkey string , ps_availqty int , ps_supplycost double , ps_comment string , ps_timestamp timestamp) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE;"
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/opt/data/sf1/star/partsupp' OVERWRITE INTO TABLE ps_partsupp_star_tmp;"
 echo ""
