@@ -7,10 +7,14 @@ rm -f $resultPath
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------" |& tee -a $resultPath
 echo "-------------------------------------- "$resultPath" ---------------------------------"|& tee -a $resultPath
 
-echo "-------------------------------------- IMPALA QUERY STAR ---------------------------------"|& tee -a $resultPath
+echo "-------------------------------------- IMPALA QUERY NORMALIZED ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 echo ""|& tee -a $resultPath
+echo "--------------------------------------  Invalidate Schema  ---------------------------------"|& tee -a $resultPath
+impala-shell -q "INVALIDATE METADATA;"|& tee -a $resultPath
+echo ""|& tee -a $resultPath
+
 for i in $(seq 1 $2)
 do
 echo "--------------------------------------STARTED QUERY 1."$i" ---------------------------------"|& tee -a $resultPath

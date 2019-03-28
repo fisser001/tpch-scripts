@@ -11,6 +11,10 @@ echo "-------------------------------------- IMPALA QUERY NORMALIZED -----------
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 echo ""|& tee -a $resultPath
+echo "--------------------------------------  Invalidate Schema  ---------------------------------"|& tee -a $resultPath
+impala-shell -q "INVALIDATE METADATA;"|& tee -a $resultPath
+echo ""|& tee -a $resultPath
+
 for i in $(seq 1 $2)
 do
 echo "--------------------------------------STARTED QUERY 1."$i" ---------------------------------"|& tee -a $resultPath

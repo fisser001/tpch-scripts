@@ -26,7 +26,10 @@ echo ""
 echo "-------------------------------------- Finished deleting tables for schema denormalized ---------------------------------"
 echo ""
 fi
-
+echo "Existing Tables:"
+echo ""
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; show tables;"
+echo ""
 else
 echo "Please specify a parameter. One of the following parameters can be specified."
 echo "all or normal or star or denormal"
