@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -d $1 ]; then
+if [ ! -d $1 ] && [ ! -d $2 ]; then
 if [ "$1" = "normal" ] || [ "$1" = "all" ]; then
 echo "-------------------------------------- CREATE SCHEMA ORC NORMAL ---------------------------------"
 echo ""
@@ -91,6 +91,7 @@ echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table ps_partsupp_tmp;"
 echo "-------------------------------------- Finished creating partsupp normal ---------------------------------"
 echo ""
+rm -rf /opt/data/sf$2/normal/*
 fi
 
 
@@ -150,6 +151,7 @@ echo ""
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table ps_partsupp_star_tmp;"
 echo "-------------------------------------- Finished creating partsupp star ---------------------------------"
+rm -rf /opt/data/sf$2/star/*
 echo ""
 fi
 
@@ -162,7 +164,7 @@ echo "-------------------------------------- Start creating denormalized -------
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/opt/data/sf1/denorm/' OVERWRITE INTO TABLE denormalized_tmp;"
 echo ""
-echo rm -rf /opt/data/sf1/denorm/*
+rm -rf /opt/data/sf1/denorm/*
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; Create Table denormalized stored as orc as select * from denormalized_tmp;"
 echo ""
@@ -175,8 +177,9 @@ echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; show tables;"
 echo ""
 else
-echo "Please specify a parameter. One of the following parameters can be specified."
+echo "Please specify the parameters. One of the following parameters can be specified for the first parameter. Second paramter defines the scale factor."
 echo "all or normal or star or denormal"
+echo "Example: ./create_schema_orc normal 1"
 fi
 
 
