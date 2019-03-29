@@ -2313,6 +2313,42 @@ and l_shipmode in ('AIR', 'AIR REG')
 and l_shipinstruct = 'DELIVER IN PERSON'
 );
 
+--Query 19 raw / drill angepasst 
+select
+sum(l_extendedprice * (1 - l_discount) ) as revenue
+from
+l_lineitem inner join 
+p_part
+on 
+p_partkey = l_partkey
+where
+(
+p_brand = 'Brand#12'
+and p_container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
+and l_quantity >= 1 and l_quantity <= 1 + 10
+and p_size between 1 and 5
+and l_shipmode in ('AIR', 'AIR REG')
+and l_shipinstruct = 'DELIVER IN PERSON'
+)
+or
+(
+p_brand = 'Brand#23'
+and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')
+and l_quantity >= 10 and l_quantity <= 10 + 10
+and p_size between 1 and 10
+and l_shipmode in ('AIR', 'AIR REG')
+and l_shipinstruct = 'DELIVER IN PERSON'
+)
+or
+(
+p_brand = 'Brand#34'
+and p_container in ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')
+and l_quantity >= 20 and l_quantity <= 20 + 10
+and p_size between 1 and 15
+and l_shipmode in ('AIR', 'AIR REG')
+and l_shipinstruct = 'DELIVER IN PERSON'
+);
+
 --Query 19 normal --> ok
 select sum(l_extendedprice* (1 - l_discount)) as revenue
 from l_lineitem, p_part
@@ -2408,6 +2444,44 @@ l_partkey = ps_partkey
 and l_suppkey = ps_suppkey
 and l_shipdate >= date('1994-01-01')
 and l_shipdate < date('1994-01-01') + interval '1' year
+)
+)
+and s_nationkey = n_nationkey
+and n_name = 'CANADA'
+order by
+s_name;
+
+--Query 20 raw / drill ok
+select
+s_name,
+s_address
+from
+s_supplier, n_nation
+where
+s_suppkey in (
+select
+ps_suppkey
+from
+ps_partsupp
+where
+ps_partkey in (
+select
+p_partkey
+from
+p_part
+where
+p_name like 'forest%'
+)
+and ps_availqty > (
+select
+0.5 * sum(l_quantity)
+from
+l_lineitem
+where
+l_partkey = ps_partkey
+and l_suppkey = ps_suppkey
+and l_shipdate >= date '1994-01-01'
+and l_shipdate < date '1994-01-01' + interval '1' year
 )
 )
 and s_nationkey = n_nationkey
