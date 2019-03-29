@@ -36,7 +36,7 @@ echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 3."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
-echo "--------------------------------------STARTED QUERY 4"$i" ---------------------------------"|& tee -a $resultPath
+echo "--------------------------------------STARTED QUERY 4."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e ""|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath

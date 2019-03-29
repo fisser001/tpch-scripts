@@ -116,7 +116,7 @@ count(*) as count_order
 from
 lo_lineitem_orders_star
 where
-l_shipdate <= to_date(date_sub(cast('1998-12-01' as timestamp), interval 90 day))
+to_date(l_shipdate) <= to_date(date_sub(cast('1998-12-01' as timestamp), interval 90 day))
 group by
 l_returnflag,
 l_linestatus
@@ -139,7 +139,8 @@ count(*) as count_order
 from
 lo_lineitem_orders_star
 where
-to_date(l_shipdate) <= date'1998-12-01' - interval '90' day)
+l_shipdate <= date'1998-12-01' - interval '90' day
+group by
 l_returnflag,
 l_linestatus
 order by
@@ -2089,7 +2090,7 @@ and p_size in (49, 14, 23, 45, 19, 3, 36, 9) and s_comment not like '%Customer%C
 group by p_brand, p_type, p_size 
 order by  supplier_cnt desc,  p_brand,  p_type, p_size;
 
---Query 16 star impala ok
+--Query 16 star drill / impala ok
 select
 p_brand,
 p_type,
@@ -2164,7 +2165,7 @@ where
 a.l_partkey = b.p_partkey
 );
 
---Query 17 star impala ok
+--Query 17 star drill/impala ok
 select
 sum(l_extendedprice) / 7.0 as avg_yearly
 from
@@ -2412,6 +2413,41 @@ and l_shipmode in ('AIR', 'AIR REG')
 and l_shipinstruct = 'DELIVER IN PERSON'
 );
 
+--Query 19 star drill ok
+select
+sum(l_extendedprice * (1 - l_discount) ) as revenue
+from
+lo_lineitem_orders_star inner join p_part_star
+on p_partkey = l_partkey
+where
+(
+p_brand = 'Brand#12'
+and p_container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
+and l_quantity >= 1 and l_quantity <= 1 + 10
+and p_size between 1 and 5
+and l_shipmode in ('AIR', 'AIR REG')
+and l_shipinstruct = 'DELIVER IN PERSON'
+)
+or
+(
+p_brand = 'Brand#23'
+and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')
+and l_quantity >= 10 and l_quantity <= 10 + 10
+and p_size between 1 and 10
+and l_shipmode in ('AIR', 'AIR REG')
+and l_shipinstruct = 'DELIVER IN PERSON'
+)
+or
+(
+p_brand = 'Brand#34'
+and p_container in ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')
+and l_quantity >= 20 and l_quantity <= 20 + 10
+and p_size between 1 and 15
+and l_shipmode in ('AIR', 'AIR REG')
+and l_shipinstruct = 'DELIVER IN PERSON'
+);
+
+
 
 --Query 20 raw / presto --> drill not working
 select
@@ -2582,6 +2618,43 @@ and n_name = 'CANADA'
 order by
 s_name;
 
+--Query 20 drill ok
+select
+s_name,
+s_address
+from
+s_supplier_star
+where
+s_suppkey in (
+select
+ps_suppkey
+from
+ps_partsupp_star
+where
+ps_partkey in (
+select
+p_partkey
+from
+p_part_star
+where
+p_name like 'forest%'
+)
+and ps_availqty > (
+select
+0.5 * sum(l_quantity)
+from
+lo_lineitem_orders_star
+where
+l_partkey = ps_partkey
+and l_suppkey = ps_suppkey
+and l_shipdate >= date '1994-01-01'
+and l_shipdate < date '1994-01-01' + interval '1' year
+)
+)
+and n_name = 'CANADA'
+order by
+s_name;
+
 --Query 20 star impala ok
 select
 s_name,
@@ -2734,7 +2807,7 @@ numwait desc,
 s_name
 limit 100;
 
---Query 21 star impala ok 
+--Query 21 star impala/drill ok 
 select
 s_name,
 count(*) as numwait
