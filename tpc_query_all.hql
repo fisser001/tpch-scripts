@@ -635,7 +635,7 @@ from l_lineitem
 where l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year 
 and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;
 
---Query 6 denormal ok
+--Query 6 denormal hive ok
 select
 sum(l_extendedprice*l_discount) as revenue
 from
@@ -792,7 +792,7 @@ group by supp_nation,cust_nation,l_year
 order by supp_nation, cust_nation, l_year;
 set hive.auto.convert.join=true;
 
---Query 7 denorm ok
+--Query 7 denorm hive ok
 select  n2_name, n_name, 
  year(l_shipdate) as l_year, sum(l_extendedprice * (1 - l_discount)) as revenue
 from denormalized
@@ -990,7 +990,7 @@ and p_type = 'ECONOMY ANODIZED STEEL') as all_nations
 group by o_year
 order by o_year;
 
---Query 8 denorm drill ok
+--Query 8 denorm drill hive ok
 select o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share 
 from ( select year(o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume, 
 n2_name as nation 
@@ -1341,7 +1341,7 @@ order by revenue desc limit 20;
 set hive.auto.convert.join=true;
 
 
---Query 10 denorm ok
+--Query 10 denorm hive ok
 select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue, c_acctbal, 
 n_name, c_address, c_phone, c_comment
 from denormalized 
@@ -1612,7 +1612,7 @@ group by l_shipmode
 order by l_shipmode;
 set hive.auto.convert.join=true;
 
---Query 12 denormal ok
+--Query 12 denormal hive ok
 select
 l_shipmode,
 sum(case
@@ -2044,7 +2044,7 @@ where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + inter
 group by l_suppkey, s_name,s_address,s_phone
 order by total_revenue desc limit 1;
 
---Query 15 denormal for drill ok aber angepasst
+--Query 15 denormal for drill + hive ok aber angepasst
 select l_suppkey as supplier_no,sum(l_extendedprice * (1 - l_discount)) as total_revenue,
 s_name,s_address,s_phone
 from denormalized	
@@ -2269,7 +2269,7 @@ select 0.2 * avg(l_quantity)
 from l_lineitem
 where l_partkey = p_partkey);
 
---Query 17 denorm impala / drill ok
+--Query 17 denorm impala / hive/ drill ok
 select
 sum(l_extendedprice) / 7.0 as avg_yearly
 from
@@ -2351,7 +2351,7 @@ and o_orderkey = l_orderkey
 group by c_name,c_custkey, o_orderkey, o_orderdate,o_totalprice
 order by o_totalprice desc, o_orderdate limit 100;
 
---Query 18 denorm drill ok
+--Query 18 denorm drill hive ok
 select c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum(l_quantity) 
 from denormalized
 group by c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice 
@@ -2470,7 +2470,7 @@ and l_shipmode in ('AIR', 'AIR REG')
 and l_shipinstruct = 'DELIVER IN PERSON'
 );
 
---Query 19 normal --> ok
+--Query 19 normal hive --> ok
 select sum(l_extendedprice* (1 - l_discount)) as revenue
 from l_lineitem, p_part
 where (p_partkey = l_partkey and p_brand = 'Brand#12' and p_container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
@@ -2871,7 +2871,7 @@ from
 (
 select li.l_suppkey, li.l_orderkey
 from l_lineitem li join o_orders o on li.l_orderkey = o.o_orderkey and
-                      o.o_orderstatus = 'F'
+      o.o_orderstatus = 'F'
      join
      (
      select l_orderkey, count(distinct l_suppkey) as cntSupp
@@ -2890,7 +2890,7 @@ order by
 limit 100;
 set hive.auto.convert.join=true;
 
---Query 21 denormal impala drill ok
+--Query 21 denormal impala hive drill ok
 select
 s_name,
 count(*) as numwait
@@ -3092,21 +3092,21 @@ where
 and a.c_acctbal > (
 select
 avg(b.c_acctbal)
-                from
-                denormalized b
-                where
-                b.c_acctbal > 0.00
-                and substring(b.c_phone, 1,2) in
-                ('13','31','23','29','30','18','17')
-                )
-        and not exists (
-                select
-                *
-                from
-                denormalized c
-                where
-                a.o_custkey = c.c_custkey
-                )
+from
+denormalized b
+where
+b.c_acctbal > 0.00
+and substring(b.c_phone, 1,2) in
+('13','31','23','29','30','18','17')
+)
+and not exists (
+select
+*
+from
+denormalized c
+where
+a.o_custkey = c.c_custkey
+)
 ) as custsale
 group by
 cntrycode
@@ -3130,22 +3130,22 @@ where
 and a.c_acctbal > (
 select
 avg(b.c_acctbal)
-                from
-                denormalized b
-                where
-                b.c_acctbal > 0.00
-                and 
-                 substring(b.c_phone, 1,2) in
+from
+denormalized b
+where
+b.c_acctbal > 0.00
+and 
+ substring(b.c_phone, 1,2) in
 ('13','31','23','29','30','18','17')
-                )
+)
         and not exists (
-                select
-                *
-                from
-                denormalized c
-                where
-                a.o_custkey = c.c_custkey
-                )
+select
+*
+from
+denormalized c
+where
+a.o_custkey = c.c_custkey
+)
 ) as custsale
 group by
 cntrycode
