@@ -171,6 +171,6 @@ echo ""|& tee -a $resultPath
 done
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. Paramter 2 for number of loops."
-echo "Example ./imapalatest.sh 1 2"
+echo "Example ./hive_mr_normal_query.sh 1 2"
 exit 2
 fi

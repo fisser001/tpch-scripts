@@ -23,9 +23,6 @@ echo "--------------------------------------Finished QUERY 1."$i"---------------
 echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 2."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< ""|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 2."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
@@ -87,7 +84,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 11."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select ps_partkey, sum(ps_supplycost * ps_availqty) as value from hive.ps_partsupp_star, hive.s_supplier_star where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = 'GERMANY' group by ps_partkey having sum(ps_supplycost * ps_availqty) > ( select sum(ps_supplycost * ps_availqty) * 0.0001 from hive.ps_partsupp_star, hive.s_supplier_star where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = 'GERMANY' ) order by value desc;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select ps_partkey, sum(ps_supplycost * ps_availqty) as value1 from hive.ps_partsupp_star, hive.s_supplier_star where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = 'GERMANY' group by ps_partkey having sum(ps_supplycost * ps_availqty) > ( select sum(ps_supplycost * ps_availqty) * 0.0001 from hive.ps_partsupp_star, hive.s_supplier_star where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = 'GERMANY' ) order by value1 desc;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 11."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath

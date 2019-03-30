@@ -153,7 +153,7 @@ count(*) as count_order
 from
 lo_lineitem_orders_star
 where
-l_shipdate <= date'1998-12-01' - interval '90' day
+l_shipdate <= date '1998-12-01' - interval '90' day
 group by
 l_returnflag,
 l_linestatus
@@ -541,7 +541,7 @@ sum(l_extendedprice * (1 - l_discount)) as revenue
 from
 denormalized
 where
-(r_name = 'ASIA' and r2_name = 'ASIA')
+(r_name = 'ASIA' and r2_name = 'ASIA') and c_custkey is not null and o_orderdate <> '""'
 and o_orderdate >= date '1994-01-01'
 and o_orderdate < date '1994-01-01' + interval '1' year
 group by
@@ -2174,6 +2174,42 @@ and p_size in (49, 14, 23, 45, 19, 3, 36, 9) and s_comment not like '%Customer%C
 group by p_brand, p_type, p_size 
 order by  supplier_cnt desc,  p_brand,  p_type, p_size;
 
+--Query 16 star hive ok
+set hive.strict.checks.cartesian.product=false;
+select
+p_brand,
+p_type,
+p_size,
+count(distinct ps_suppkey) as supplier_cnt
+from
+ps_partsupp_star inner join 
+p_part_star
+on 
+p_partkey = ps_partkey
+where
+p_brand <> 'Brand#45'
+and p_type not like 'MEDIUM POLISHED%' 
+and p_size in (49, 14, 23, 45, 19, 3, 36, 9)
+and ps_suppkey not in (
+select
+s_suppkey
+from
+s_supplier_star
+where
+s_comment like '%Customer%Complaints%'
+)
+group by
+p_brand,
+p_type,
+p_size
+order by
+supplier_cnt desc,
+p_brand,
+p_type,
+p_size limit 20000;
+set hive.strict.checks.cartesian.product=true;
+
+
 --Query 16 star drill / impala ok
 select
 p_brand,
@@ -2249,7 +2285,7 @@ where
 a.l_partkey = b.p_partkey
 );
 
---Query 17 star drill/impala ok
+--Query 17 star drill/impala /hive ok
 select
 sum(l_extendedprice) / 7.0 as avg_yearly
 from
@@ -2329,7 +2365,7 @@ group by c_name, c_custkey, o_orderkey, to_date(o_orderdate), o_totalprice
 having sum(l_quantity) > 300 
 order by o_totalprice desc, to_date(o_orderdate);
 
---Query 18 star impala ok
+--Query 18 star impala / hive ok
 select
 c_name,
 c_custkey,
@@ -2665,7 +2701,7 @@ order by s_name;
 --Query 20 denormal
 
 
---Query 20 star ok
+--Query 20 star hive ok
 select
 s_name,
 s_address
@@ -2891,7 +2927,7 @@ numwait desc,
 s_name
 limit 100;
 
---Query 21 star impala/drill ok 
+--Query 21 star impala/drill ok --> hive not supported due to subquery
 select
 s_name,
 count(*) as numwait
@@ -3155,7 +3191,7 @@ cntrycode
 order by
 cntrycode;
 
---Query 22 star hive / impala
+--Query 22 star  impala
 select
 cntrycode,
 count(*) as numcust,

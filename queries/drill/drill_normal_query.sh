@@ -73,14 +73,14 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 9."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select nation, o_year, sum(amount) as sum_profit from ( select n_name as nation, extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from hive.p_part, hive.s_supplier, hive.l_lineitem, hive.ps_partsupp, hive.o_orders, hive.n_nation where s_suppkey = l_suppkey and ps_suppkey = l_suppkey and ps_partkey = l_partkey and hive.p_partkey = l_partkey and o_orderkey = l_orderkey and s_nationkey = hive.n_nationkey and p_name like '%green%' ) as profit group by nation, o_year order by nation, o_year desc;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select nation, o_year, sum(amount) as sum_profit from ( select n_name as nation, extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from hive.p_part, hive.s_supplier, hive.l_lineitem, hive.ps_partsupp, hive.o_orders, hive.n_nation where s_suppkey = l_suppkey and ps_suppkey = l_suppkey and ps_partkey = l_partkey and p_partkey = l_partkey and o_orderkey = l_orderkey and s_nationkey = n_nationkey and p_name like '%green%' ) as profit group by nation, o_year order by nation, o_year desc;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 9."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 10."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue, c_acctbal, n_name, c_address, c_phone, c_comment from hive.c_customer, hive.o_orders, hive.l_lineitem, hive.n_nation where c_custkey = o_custkey and l_orderkey = o_orderkey and o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month and l_returnflag = 'R' and c_nationkey = hive.n_nationkey group by c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment order by revenue desc limit 20;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue, c_acctbal, n_name, c_address, c_phone, c_comment from hive.c_customer, hive.o_orders, hive.l_lineitem, hive.n_nation where c_custkey = o_custkey and l_orderkey = o_orderkey and o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month and l_returnflag = 'R' and c_nationkey = n_nationkey group by c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment order by revenue desc limit 20;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 10."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -146,7 +146,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 20."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select s_name, s_address from hive.s_supplier, hive.n_nation where s_suppkey in ( select ps_suppkey from hive.ps_partsupp where ps_partkey in ( select p_partkey from hive.p_part where p_name like 'forest%' ) and ps_availqty > ( select 0.5 * sum(l_quantity) from hive.l_lineitem where l_partkey = ps_partkey and l_suppkey = ps_suppkey and l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year ) ) and s_nationkey = hive.n_nationkey and n_name = 'CANADA' order by s_name;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select s_name, s_address from hive.s_supplier, hive.n_nation where s_suppkey in ( select ps_suppkey from hive.ps_partsupp where ps_partkey in ( select p_partkey from hive.p_part where p_name like 'forest%' ) and ps_availqty > ( select 0.5 * sum(l_quantity) from hive.l_lineitem where l_partkey = ps_partkey and l_suppkey = ps_suppkey and l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year ) ) and s_nationkey = n_nationkey and n_name = 'CANADA' order by s_name;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 20."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
