@@ -69,7 +69,7 @@ group by l_returnflag, l_linestatus
 order by l_returnflag, l_linestatus;
 
 
---> Query 1 denormal / presto --> ok
+--> Query 1 denormal / presto /hive --> ok
 select
 l_returnflag,
 l_linestatus,
@@ -422,7 +422,7 @@ and exists (select * from l_lineitem where l_orderkey = o_orderkey and l_commitd
 group by o_orderpriority 
 order by o_orderpriority;
 
--- Query 4 denormal /drill ok
+-- Query 4 denormal /drill / hive ok
 select o_orderpriority, count (distinct o_orderkey) as order_count 
 from denormalized
 where o_orderdate >= date '1993-07-01' and o_orderdate < date '1993-07-01' + interval '3' month 

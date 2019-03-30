@@ -17,7 +17,7 @@ for i in $(seq 1 $2)
 do
 echo "--------------------------------------STARTED QUERY 1."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; "|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from denormalized where l_shipdate <= date '1998-12-01' - interval '90' day group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 1."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -28,7 +28,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 3."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; "|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select o_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, o_orderdate, o_shippriority  from denormalized where c_mktsegment = 'BUILDING' and o_orderdate < date '1995-03-15'  and l_shipdate > date '1995-03-15'  group by o_orderkey, o_orderdate, o_shippriority  order by revenue desc, o_orderdate limit 10;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 3."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath

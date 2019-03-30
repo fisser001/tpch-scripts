@@ -17,7 +17,7 @@ for i in $(seq 1 $2)
 do
 echo "--------------------------------------STARTED QUERY 1."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty,  sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from hive.denormalized  where l_shipdate <> '""' and l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty,  sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from hive.denormalized  where l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 1."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -28,7 +28,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 3."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select o_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, o_orderdate, o_shippriority  from hive.denormalized where c_mktsegment = 'BUILDING' and o_orderdate < date '1995-03-15'  and l_shipdate <> '""' and l_shipdate > date '1995-03-15'  group by o_orderkey, o_orderdate, o_shippriority  order by revenue desc, o_orderdate limit 10;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select o_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, o_orderdate, o_shippriority  from hive.denormalized where c_mktsegment = 'BUILDING' and o_orderdate < date '1995-03-15'  and l_shipdate > date '1995-03-15'  group by o_orderkey, o_orderdate, o_shippriority  order by revenue desc, o_orderdate limit 10;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 3."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -46,14 +46,14 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 6."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select sum(l_extendedprice*l_discount) as revenue from hive.denormalized where l_shipdate <> '""' and l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select sum(l_extendedprice*l_discount) as revenue from hive.denormalized where l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 6."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 7."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select  n2_name, n_name,   year(l_shipdate) as l_year, sum(l_extendedprice * (1 - l_discount)) as revenue from hive.denormalized where ((n2_name = 'FRANCE' and n_name = 'GERMANY') or (n2_name = 'GERMANY'  and n_name = 'FRANCE')) and l_shipdate <> '""' and l_shipdate between date '1995-01-01' and date '1996-12-31'  group by n2_name, n_name, year(l_shipdate)  order by n2_name, n_name, l_year;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select  n2_name, n_name,   year(l_shipdate) as l_year, sum(l_extendedprice * (1 - l_discount)) as revenue from hive.denormalized where ((n2_name = 'FRANCE' and n_name = 'GERMANY') or (n2_name = 'GERMANY'  and n_name = 'FRANCE')) and l_shipdate between date '1995-01-01' and date '1996-12-31'  group by n2_name, n_name, year(l_shipdate)  order by n2_name, n_name, l_year;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 7."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -85,7 +85,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 12."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select l_shipmode, sum(case when o_orderpriority ='1-URGENT' or o_orderpriority ='2-HIGH' then 1 else 0 end) as high_line_count, sum(case when o_orderpriority <> '1-URGENT' and o_orderpriority <> '2-HIGH' then 1 else 0 end) as low_line_count from hive.denormalized where l_shipdate <> '""' and l_shipmode in ('MAIL', 'SHIP') and l_commitdate < l_receiptdate and l_shipdate < l_commitdate and l_receiptdate >= date '1994-01-01' and l_receiptdate < date '1994-01-01' + interval '1' year group by l_shipmode order by l_shipmode;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select l_shipmode, sum(case when o_orderpriority ='1-URGENT' or o_orderpriority ='2-HIGH' then 1 else 0 end) as high_line_count, sum(case when o_orderpriority <> '1-URGENT' and o_orderpriority <> '2-HIGH' then 1 else 0 end) as low_line_count from hive.denormalized where  l_shipmode in ('MAIL', 'SHIP') and l_commitdate < l_receiptdate and l_shipdate < l_commitdate and l_receiptdate >= date '1994-01-01' and l_receiptdate < date '1994-01-01' + interval '1' year group by l_shipmode order by l_shipmode;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 12."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -96,14 +96,14 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 14."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select 100.00 * sum(case when p_type like 'PROMO%' then l_extendedprice*(1-l_discount) else 0 end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue from hive.denormalized where l_partkey = p_partkey and l_shipdate <> '""' and l_shipdate >= date '1995-09-01' and l_shipdate < date '1995-09-01' + interval '1' month;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select 100.00 * sum(case when p_type like 'PROMO%' then l_extendedprice*(1-l_discount) else 0 end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue from hive.denormalized where l_partkey = p_partkey and  l_shipdate >= date '1995-09-01' and l_shipdate < date '1995-09-01' + interval '1' month;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 14."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 15."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select l_suppkey as supplier_no,sum(l_extendedprice * (1 - l_discount)) as total_revenue, s_name,s_address,s_phone from hive.denormalized  where l_shipdate <> '""' and l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month group by l_suppkey, s_name,s_address,s_phone order by total_revenue desc limit 1;"|& tee -a $resultPath
+/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "select l_suppkey as supplier_no,sum(l_extendedprice * (1 - l_discount)) as total_revenue, s_name,s_address,s_phone from hive.denormalized  where  l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month group by l_suppkey, s_name,s_address,s_phone order by total_revenue desc limit 1;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 15."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
