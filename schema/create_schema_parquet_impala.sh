@@ -166,9 +166,9 @@ echo ""
 echo "-------------------------------------- Start creating denormalized ---------------------------------"
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; CREATE TABLE denormalized_tmp (c_custkey string, c_name string, c_address string, c_nationkey string, c_phone string, c_acctbal double, c_mktsegment string, c_comment string, n_nationkey string, n_name string, n_regionkey string, n_comment string, r_regionkey string, r_name string, r_comment string, o_orderkey string, o_custkey string, o_orderstatus string, o_totalprice double, o_orderdate string, o_orderpriority string, o_clerk string, o_shippriority int, o_comment string, l_orderkey string, l_partkey string, l_suppkey string, l_linenumber int, l_quantity double, l_extendedprice double, l_discount double, l_tax double, l_returnflag string, l_linestatus string, l_shipdate string, l_commitdate string, l_receiptdate string, l_shipinstruct string, l_shipmode string, l_comment string, s_suppkey string, s_name string, s_address string, s_nationkey string, s_phone string, s_acctbal double, s_comment string, n2_nationkey string, n2_name string, n2_regionkey string, n2_comment string, r2_regionkey string, r2_name string, r2_comment string, p_partkey string, p_name string, p_mfgr string, p_brand string, p_type string, p_size int, p_container string, p_retailprice double, p_comment string, ps_partkey string, ps_suppkey string, ps_availqty int, ps_supplycost double, ps_comment string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE;"
 echo ""
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/opt/data/sf1/denorm/' OVERWRITE INTO TABLE denormalized_tmp;"
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/opt/data/sf1/denormal/' OVERWRITE INTO TABLE denormalized_tmp;"
 echo ""
-rm -rf /opt/data/sf1/denorm/*
+rm -rf /opt/data/sf1/denormal/*
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; Create Table denormalized stored as parquet as select * from denormalized_tmp;"
 echo ""

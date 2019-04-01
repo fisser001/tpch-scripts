@@ -22,9 +22,6 @@ echo "--------------------------------------Finished QUERY 1."$i"---------------
 echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 2."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute ""|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 2."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
