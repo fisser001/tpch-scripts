@@ -1,9 +1,8 @@
 #!/bin/bash
 
-if [ ! -d $1 ] && [ ! -d $2 ]; then
-mkdir -p results
-cd results
-resultPath=presto_star_query_sf"$1"_result.txt
+if [ ! -d $1 ]; then
+cd /data/results
+resultPath=presto_star_query_sf"$1"_result_explain.txt
 rm -f $resultPath
 touch $resultPath
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------"|& tee -a $resultPath|& tee -a $resultPath

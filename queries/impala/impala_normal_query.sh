@@ -1,8 +1,7 @@
 #!/bin/bash
 
 if [ ! -d $1 ] && [ ! -d $2 ]; then
-mkdir -p results
-cd results
+cd /data/results
 resultPath=impala_normal_query_sf"$1"_result.txt
 rm -f $resultPath
 touch $resultPath

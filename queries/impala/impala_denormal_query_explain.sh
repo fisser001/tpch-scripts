@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ ! -d $1 ] && [ ! -d $2 ]; then
-mkdir -p results
-cd results
-resultPath=impala_denormal_query_sf"$1"_result.txt
+if [ ! -d $1 ]; then
+
+cd /data/results
+resultPath=impala_denormal_query_sf"$1"_result_explain.txt
 rm -f $resultPath
 touch $resultPath
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------" |& tee -a $resultPath
