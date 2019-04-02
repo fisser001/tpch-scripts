@@ -51,7 +51,7 @@ sum(l_extendedprice*(1-l_discount)) as sum_disc_price,
 sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, 
 avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, 
 avg(l_discount) as avg_disc, count(*) as count_order 
-from denormalized 
+from denormalized
 where l_shipdate <= date '1998-12-01' - interval '90' day 
 group by l_returnflag, l_linestatus 
 order by l_returnflag, l_linestatus;
@@ -481,6 +481,50 @@ n_name
 order by
 revenue desc;
 
+--Query 5 normal exp.
+select
+n2.n_name,
+sum(l_extendedprice * (1 - l_discount)) as revenue
+from
+c_customer 
+left outer join 
+n_nation n1
+on c_nationkey = n_nationkey
+left outer join 
+r_region r1
+on n_regionkey = r_regionkey
+left outer join
+o_orders
+on c_custkey = o_custkey
+left outer join
+l_lineitem
+on l_orderkey = o_orderkey 
+left outer join
+s_supplier
+on (l_suppkey = s_suppkey and c_nationkey = s_nationkey)
+left outer join 
+n_nation n2
+on s_nationkey = n2.n_nationkey
+left outer join 
+r_region r2
+on n2.n_regionkey = r2.r_regionkey
+--left outer join 
+--p_part
+--on l_partkey = p_partkey
+--left outer join 
+--ps_partsupp
+--on (ps_partkey = p_partkey and ps_suppkey = s_suppkey)
+where
+r1.r_name = 'ASIA' 
+and 
+r2.r_name='ASIA'
+and o_orderdate >= date '1994-01-01'
+and o_orderdate < date '1994-01-01' + interval '1' year
+group by
+n2.n_name
+order by
+revenue desc;
+
 --Query 5 normal impala --> ok
 select
 n_name,
@@ -521,16 +565,26 @@ set hive.auto.convert.join=true;
 
 --> Query 5 denorm ok
 select
-n_name,
+n2_name,
 sum(l_extendedprice * (1 - l_discount)) as revenue
 from
 denormalized
 where
-r_name = 'ASIA'
+r2_name = 'ASIA' and n_name in 
+(
+select
+n_name
+from
+denormalized
+where
+r_name = 'ASIA' 
+and o_orderdate >= date '1994-01-01'
+and o_orderdate < date '1994-01-01' + interval '1' year
+)
 and o_orderdate >= date '1994-01-01'
 and o_orderdate < date '1994-01-01' + interval '1' year
 group by
-n_name
+n2_name
 order by
 revenue desc;
 
@@ -541,7 +595,7 @@ sum(l_extendedprice * (1 - l_discount)) as revenue
 from
 denormalized
 where
-(r_name = 'ASIA' and r2_name = 'ASIA') and c_custkey is not null and o_orderdate <> '""'
+(r_name = 'ASIA' and r2_name = 'ASIA') --and c_custkey is not null --and o_orderdate <> '""'
 and o_orderdate >= date '1994-01-01'
 and o_orderdate < date '1994-01-01' + interval '1' year
 group by
@@ -1631,6 +1685,34 @@ from
 denormalized
 where l_shipdate <> '""' and
 l_shipmode in ('MAIL', 'SHIP')
+and l_commitdate < l_receiptdate
+and l_shipdate < l_commitdate
+and l_receiptdate >= date '1994-01-01'
+and l_receiptdate < date '1994-01-01' + interval '1' year
+group by
+l_shipmode
+order by
+l_shipmode;
+
+
+--Query 12 denormal hive ok
+select
+l_shipmode,
+sum(case
+when o_orderpriority ='1-URGENT'
+or o_orderpriority ='2-HIGH'
+then 1
+else 0
+end) as high_line_count,
+sum(case
+when o_orderpriority <> '1-URGENT'
+and o_orderpriority <> '2-HIGH'
+then 1
+else 0
+end) as low_line_count
+from
+denormalized
+where l_shipmode in ('MAIL', 'SHIP')
 and l_commitdate < l_receiptdate
 and l_shipdate < l_commitdate
 and l_receiptdate >= date '1994-01-01'

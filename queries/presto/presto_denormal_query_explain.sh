@@ -109,7 +109,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 16."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "explain select p_brand, p_type,p_size, count(distinct ps_suppkey) as supplier_cnt from ps_partsupp inner join p_part  on p_partkey = ps_partkey  left outer join s_supplier on ps_suppkey = s_suppkey where s_comment not like '%Customer%Complaints%' and p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%'  and p_size in (49, 14, 23, 45, 19, 3, 36, 9) group by p_brand,p_type,p_size order by supplier_cnt desc, p_brand,p_type, p_size limit 20000;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "explain select p_brand, p_type, p_size, count(distinct s_suppkey) as supplier_cnt  from denormalized  where p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%'  and p_size in (49, 14, 23, 45, 19, 3, 36, 9) and s_comment not like '%Customer%Complaints%' group by p_brand, p_type, p_size  order by  supplier_cnt desc,  p_brand,  p_type, p_size;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 16."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath

@@ -2,8 +2,8 @@
 
 if [ ! -d $1 ] && [ ! -d $2 ]; then
 echo "-------------------------------------- CREATE PATH IF NOT EXIST ---------------------------------"
-mkdir -p /opt/data
-cd /opt/data
+mkdir -p /data/results/raw
+cd /data/results
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------"
 echo "-------------------------------------- Path: /opt/data/ ---------------------------------"
 
