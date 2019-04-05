@@ -215,7 +215,7 @@ do
 if [ "$3" = "single" ]; then
     for i in $(seq 1 21)
     do    
-     echo query"$i"
+     query"$i"
     done
 fi
 done
