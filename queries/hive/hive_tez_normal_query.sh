@@ -221,7 +221,7 @@ fi
 
 if ["$3" = "multiple"]
     for i in $(seq 1 21)
-    query${i}
+    eval query${i}
     done
 fi
 
