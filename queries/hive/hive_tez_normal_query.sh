@@ -39,7 +39,7 @@ echo ""|& tee -a $resultPath
 query5 () {
 echo "--------------------------------------STARTED QUERY 5."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set hive.auto.convert.join=false; select n_name,sum(l_extendedprice * (1 - l_discount)) as revenue from c_customer, o_orders, l_lineitem, s_supplier, n_nation, r_regionwhere c_custkey = o_custkey and l_orderkey = o_orderkey and l_suppkey = s_suppkey and c_nationkey = s_nationkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = 'ASIA' and o_orderdate >= date '1994-01-01'and o_orderdate < date '1994-01-01' + interval '1' year group by n_nameorder by revenue desc; set hive.auto.convert.join=true;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set hive.auto.convert.join=false; select n_name,sum(l_extendedprice * (1 - l_discount)) as revenue from c_customer, o_orders, l_lineitem, s_supplier, n_nation, r_region where c_custkey = o_custkey and l_orderkey = o_orderkey and l_suppkey = s_suppkey and c_nationkey = s_nationkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = 'ASIA' and o_orderdate >= date '1994-01-01' and o_orderdate < date '1994-01-01' + interval '1' year group by n_nameorder by revenue desc; set hive.auto.convert.join=true;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 5."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -48,7 +48,7 @@ echo ""|& tee -a $resultPath
 query6 () {
 echo "--------------------------------------STARTED QUERY 6."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select sum(l_extendedprice * l_discount) as revenue from l_lineitemwhere l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select sum(l_extendedprice * l_discount) as revenue from l_lineitem where l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 6."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -66,7 +66,7 @@ echo ""|& tee -a $resultPath
 query8 () {
 echo "--------------------------------------STARTED QUERY 8."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select o_year, sum(case	when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_sharefrom (select extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) as volume, n2.n_name as nation from p_part inner join l_lineitem on p_partkey = l_partkey inner join s_supplieron s_suppkey = l_suppkey inner join o_orders on l_orderkey = o_orderkey inner join c_customer on o_custkey = c_custkey inner join n_nation n1 on c_nationkey = n1.n_nationkey inner join n_nation n2 on s_nationkey = n2.n_nationkey inner join r_region on n1.n_regionkey = r_regionkey where r_name = 'AMERICA' and o_orderdate between date '1995-01-01' and date '1996-12-31' and p_type = 'ECONOMY ANODIZED STEEL') as all_nations group by o_year order by o_year;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select o_year, sum(case	when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share from (select extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) as volume, n2.n_name as nation from p_part inner join l_lineitem on p_partkey = l_partkey inner join s_supplier on s_suppkey = l_suppkey inner join o_orders on l_orderkey = o_orderkey inner join c_customer on o_custkey = c_custkey inner join n_nation n1 on c_nationkey = n1.n_nationkey inner join n_nation n2 on s_nationkey = n2.n_nationkey inner join r_region on n1.n_regionkey = r_regionkey where r_name = 'AMERICA' and o_orderdate between date '1995-01-01' and date '1996-12-31' and p_type = 'ECONOMY ANODIZED STEEL') as all_nations group by o_year order by o_year;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 8."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -75,7 +75,7 @@ echo ""|& tee -a $resultPath
 query9 () {
 echo "--------------------------------------STARTED QUERY 9."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set hive.auto.convert.join=false; select nation, o_year, sum(amount) as sum_profit from (select n_name as nation, extract(year from o_orderdate) as o_year,l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from p_part inner join l_lineitem on p_partkey = l_partkey inner join s_supplieron s_suppkey = l_suppkey inner join ps_partsupp on ps_suppkey = l_suppkey and ps_partkey = l_partkey inner join o_orders on o_orderkey = l_orderkey inner join n_nation on s_nationkey = n_nationkey where p_name like '%green%') as profitgroup by nation, o_year order by nation, o_year desc; set hive.auto.convert.join=true;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set hive.auto.convert.join=false; select nation, o_year, sum(amount) as sum_profit from (select n_name as nation, extract(year from o_orderdate) as o_year,l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from p_part inner join l_lineitem on p_partkey = l_partkey inner join s_supplieron s_suppkey = l_suppkey inner join ps_partsupp on ps_suppkey = l_suppkey and ps_partkey = l_partkey inner join o_orders on o_orderkey = l_orderkey inner join n_nation on s_nationkey = n_nationkey where p_name like '%green%') as profit group by nation, o_year order by nation, o_year desc; set hive.auto.convert.join=true;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 9."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -84,7 +84,7 @@ echo ""|& tee -a $resultPath
 query10 () {
 echo "--------------------------------------STARTED QUERY 10."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e " set hive.execution.engine=mr; select set hive.auto.convert.join=false; select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue,c_acctbal,n_name,c_address,c_phone,c_comment from c_customer, o_orders, l_lineitem, n_nationwhere c_custkey = o_custkey and l_orderkey = o_orderkey and o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month and l_returnflag = 'R' and c_nationkey = n_nationkey group by c_custkey, c_name, c_acctbal,c_phone,n_name,c_address, c_comment order by revenue desc limit 20; set hive.auto.convert.join=true;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e " set hive.execution.engine=mr; select set hive.auto.convert.join=false; select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue,c_acctbal,n_name,c_address,c_phone,c_comment from c_customer, o_orders, l_lineitem, n_nation where c_custkey = o_custkey and l_orderkey = o_orderkey and o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month and l_returnflag = 'R' and c_nationkey = n_nationkey group by c_custkey, c_name, c_acctbal,c_phone,n_name,c_address, c_comment order by revenue desc limit 20; set hive.auto.convert.join=true;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 10."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -93,7 +93,7 @@ echo ""|& tee -a $resultPath
 query11 () {
 echo "--------------------------------------STARTED QUERY 11."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select create view q11_part_tmp_cached as select ps_partkey,sum(ps_supplycost * ps_availqty) as part_value from ps_partsupp,s_supplier,n_nation where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = 'GERMANY' group by ps_partkey; create view q11_sum_tmp_cached as select sum(part_value) as total_value from q11_part_tmp_cached; set hive.strict.checks.cartesian.product=false; select ps_partkey, part_value as value from (select ps_partkey,part_value,total_value from q11_part_tmp_cached join q11_sum_tmp_cached) a where part_value > total_value * 0.0001 order by value desc; set hive.strict.checks.cartesian.product=true; drop view q11_sum_tmp_cached;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; create view q11_part_tmp_cached as select ps_partkey,sum(ps_supplycost * ps_availqty) as part_value from ps_partsupp,s_supplier,n_nation where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = 'GERMANY' group by ps_partkey; create view q11_sum_tmp_cached as select sum(part_value) as total_value from q11_part_tmp_cached; set hive.strict.checks.cartesian.product=false; select ps_partkey, part_value as value from (select ps_partkey,part_value,total_value from q11_part_tmp_cached join q11_sum_tmp_cached) a where part_value > total_value * 0.0001 order by value desc; set hive.strict.checks.cartesian.product=true; drop view q11_sum_tmp_cached;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 11."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -111,7 +111,7 @@ echo ""|& tee -a $resultPath
 query13 () {
 echo "--------------------------------------STARTED QUERY 13."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select c_count, count(*) as custdist from (select c_custkey,count(o_orderkey) as c_count from c_customer left outer join o_orders on c_custkey = o_custkey and o_comment not like '%special%requests%'group by c_custkey) as c_ordersgroup by c_count order by custdist desc, c_count desc;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select c_count, count(*) as custdist from (select c_custkey,count(o_orderkey) as c_count from c_customer left outer join o_orders on c_custkey = o_custkey and o_comment not like '%special%requests%'group by c_custkey) as c_orders group by c_count order by custdist desc, c_count desc;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 13."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -129,7 +129,7 @@ echo ""|& tee -a $resultPath
 query15 () {
 echo "--------------------------------------STARTED QUERY 15."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; create view v_revenue (supplier_no, total_revenue) as select l_suppkey,sum(l_extendedprice * (1 - l_discount)) from denormalized	where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month group by l_suppkey; select s_suppkey,s_name,s_address,s_phone,max(total_revenue) as total_revenue from denormalized, v_revenue where s_suppkey = supplier_no group by s_suppkey,s_name,s_address,s_phone order by total_revenue desc limit 1; drop view v_revenue;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set hive.auto.convert.join=false; create view v_revenue_denorm (supplier_no, total_revenue) as select l_suppkey,sum(l_extendedprice * (1 - l_discount)) from denormalized	 where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month group by l_suppkey;  select s_suppkey,s_name,s_address,s_phone,max(total_revenue) as total_revenue from denormalized, v_revenue_denorm  where s_suppkey = supplier_no group by s_suppkey,s_name,s_address,s_phone order by total_revenue desc limit 1; set hive.auto.convert.join=true;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 15."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -138,7 +138,7 @@ echo ""|& tee -a $resultPath
 query16 () {
 echo "--------------------------------------STARTED QUERY 16."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select p_brand, p_type,p_size, count(distinct ps_suppkey) as supplier_cntfrom ps_partsupp inner join p_part on p_partkey = ps_partkey left outer join s_supplier on ps_suppkey = s_suppkey where s_comment not like '%Customer%Complaints%' and p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%' and p_size in (49, 14, 23, 45, 19, 3, 36, 9) group by p_brand,p_type,p_size order by supplier_cnt desc, p_brand,p_type, p_size limit 20000;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select p_brand, p_type,p_size, count(distinct ps_suppkey) as supplier_cnt from ps_partsupp inner join p_part on p_partkey = ps_partkey left outer join s_supplier on ps_suppkey = s_suppkey where s_comment not like '%Customer%Complaints%' and p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%' and p_size in (49, 14, 23, 45, 19, 3, 36, 9) group by p_brand,p_type,p_size order by supplier_cnt desc, p_brand,p_type, p_size limit 20000;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 16."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -147,7 +147,7 @@ echo ""|& tee -a $resultPath
 query17 () {
 echo "--------------------------------------STARTED QUERY 17."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select sum(l_extendedprice) / 7.0 as avg_yearly from l_lineitem, p_partwhere p_partkey = l_partkey and p_brand = 'Brand#23' and p_container = 'MED BOX' and l_quantity < (select 0.2 * avg(l_quantity) from l_lineitem where l_partkey = p_partkey);"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select sum(l_extendedprice) / 7.0 as avg_yearly from l_lineitem, p_part where p_partkey = l_partkey and p_brand = 'Brand#23' and p_container = 'MED BOX' and l_quantity < (select 0.2 * avg(l_quantity) from l_lineitem where l_partkey = p_partkey);"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 17."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -156,7 +156,7 @@ echo ""|& tee -a $resultPath
 query18 () {
 echo "--------------------------------------STARTED QUERY 18."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select c_name,c_custkey,o_orderkey, o_orderdate,o_totalprice,sum(l_quantity) from c_customer, o_orders, l_lineitem where o_orderkey in (select l_orderkey from l_lineitem group by l_orderkey having sum(l_quantity) > 300)and c_custkey = o_custkey and o_orderkey = l_orderkey group by c_name,c_custkey, o_orderkey, o_orderdate,o_totalprice order by o_totalprice desc, o_orderdate limit 100;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; select c_name,c_custkey,o_orderkey, o_orderdate,o_totalprice,sum(l_quantity) from c_customer, o_orders, l_lineitem where o_orderkey in (select l_orderkey from l_lineitem group by l_orderkey having sum(l_quantity) > 300) and c_custkey = o_custkey and o_orderkey = l_orderkey group by c_name,c_custkey, o_orderkey, o_orderdate,o_totalprice order by o_totalprice desc, o_orderdate limit 100;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 18."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -213,9 +213,15 @@ echo ""|& tee -a $resultPath
 for i in $(seq 1 $2)
 do
 if [ "$3" = "single" ]; then
-    for i in $(seq 1 21)
+    for j in $(seq 1 22)
     do    
-     query"$i"
+     query"$j"
+    done
+fi
+if [ "$3" = "multiple" ]; then
+    for j in $(seq 1 22)
+    do    
+     query"$j"
     done
 fi
 done
