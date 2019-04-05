@@ -213,19 +213,11 @@ echo ""|& tee -a $resultPath
 for i in $(seq 1 $2)
 do
 if ["$3" = "single"]; then
-    for i in $(seq 1 21)
-    do    
-    echo query"$i"    # eval $test    
-    done
+    #for i in $(seq 1 21)
+    #do    
+     echo query"$i"    # eval $test    
+    #done
 fi
-
-if ["$3" = "multiple"]; then
-    for i in $(seq 1 21)
-    do
-     query${i}
-    done
-fi
-
 done
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
