@@ -214,9 +214,8 @@ for i in $(seq 1 $2)
 do
 
 if ["$3" = "single"]
-    for i in $(seq 1 21)
-        test=query"$i"
-        eval $test
+    for i in $(seq 1 21)    
+    echo query"$i"    # eval $test    
     done
 fi
 
