@@ -215,7 +215,7 @@ do
 
 if ["$3" = "single"]
     for i in $(seq 1 21)
-    query$i
+    eval query${i}
     done
 fi
 
