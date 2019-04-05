@@ -214,13 +214,15 @@ for i in $(seq 1 $2)
 do
 
 if ["$3" = "single"; then
-    for i in $(seq 1 21)    
+    for i in $(seq 1 21)
+    do    
     echo query"$i"    # eval $test    
     done
 fi
 
 if ["$3" = "multiple"]; then
     for i in $(seq 1 21)
+    do
      query${i}
     done
 fi
