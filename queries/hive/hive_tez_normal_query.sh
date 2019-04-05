@@ -212,7 +212,7 @@ echo ""|& tee -a $resultPath
 
 for i in $(seq 1 $2)
 do
-if ["$3" = "single"]; then
+if [ "$3" = "single" ]; then
     #for i in $(seq 1 21)
     #do    
      echo query"$i"    # eval $test    
