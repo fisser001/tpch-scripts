@@ -215,13 +215,13 @@ do
 
 if ["$3" = "single"]
     for i in $(seq 1 21)
-    query"$i"
+    query$i
     done
 fi
 
 if ["$3" = "multiple"]
     for i in $(seq 1 21)
-    query$1
+    query${1}
     done
 fi
 
