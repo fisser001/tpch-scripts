@@ -213,13 +213,13 @@ echo ""|& tee -a $resultPath
 for i in $(seq 1 $2)
 do
 
-if ["$3" = "single"]
+if ["$3" = "single"; then
     for i in $(seq 1 21)    
     echo query"$i"    # eval $test    
     done
 fi
 
-if ["$3" = "multiple"]
+if ["$3" = "multiple"]; then
     for i in $(seq 1 21)
      query${i}
     done
