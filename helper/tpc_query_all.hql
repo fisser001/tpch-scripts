@@ -1525,6 +1525,9 @@ order by
 value desc;
 set hive.strict.checks.cartesian.product=true;
 
+drop view q11_part_tmp_cached;
+drop view q11_sum_tmp_cached;
+
 --Query 11 normal impala --> ok
 create view q11_part_tmp_cached as
 select ps_partkey,sum(ps_supplycost * ps_availqty) as part_value
@@ -2043,7 +2046,21 @@ drop view v_revenue;
 
 
 --Query 15 hive
-set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; create view revenue_cached as select 	l_suppkey as supplier_no, 	sum(l_extendedprice * (1 - l_discount)) as total_revenue from 	l_lineitem where 	l_shipdate >= '1996-01-01' 	and l_shipdate < '1996-04-01' group by l_suppkey;  create view max_revenue_cached as select 	max(total_revenue) as max_revenue from 	revenue_cached;  select 	s_suppkey, 	s_name, 	s_address, 	s_phone, 	total_revenue from 	s_supplier, 	revenue_cached, 	max_revenue_cached where 	s_suppkey = supplier_no 	and total_revenue = max_revenue  order by s_suppkey; drop view revenue_cached; drop view max_revenue_cached;
+ create view revenue_cached as select 	l_suppkey as supplier_no, 	
+ sum(l_extendedprice * (1 - l_discount)) as total_revenue from 	l_lineitem where 
+ 	l_shipdate >= '1996-01-01' 	and l_shipdate < '1996-04-01' 
+         group by l_suppkey;  
+         
+         
+create view max_revenue_cached as select 	max(total_revenue) as max_revenue 
+from 	revenue_cached;  
+
+select 	s_suppkey, 	s_name, 	s_address, 	
+s_phone, 	total_revenue from 	s_supplier, 	revenue_cached, 	
+max_revenue_cached where 	s_suppkey = supplier_no 	
+and total_revenue = max_revenue  order by s_suppkey; 
+
+drop view revenue_cached; drop view max_revenue_cached;
 
 --Query 15 normal impala ok
 create view v_revenue (supplier_no, total_revenue) as
@@ -2139,39 +2156,7 @@ group by l_suppkey, s_name,s_address,s_phone
 order by total_revenue desc limit 1;
 
 --Query 15 star hive
-view v_revenue_star (supplier_no, total_revenue) as
-select
-l_suppkey,
-sum(l_extendedprice * (1 - l_discount))
-from
-lo_lineitem_orders_star
-where
-l_shipdate >= date '1996-01-01'
-and l_shipdate < date '1996-01-01' + interval '3' month
-group by
-l_suppkey;
-
-select
-s_suppkey,
-s_name,
-s_address,
-s_phone,
-total_revenue
-from
-s_supplier_star,
-v_revenue_star
-where
-s_suppkey = supplier_no
-and total_revenue = (
-select
-max(total_revenue)
-from
-v_revenue_star
-)
-order by
-s_suppkey;
-
-drop view v_revenue;
+ create view revenue_cached as select l_suppkey as supplier_no, sum(l_extendedprice * (1 - l_discount)) as total_revenue from lo_lineitem_orders_star where l_shipdate >= '1996-01-01' and l_shipdate < '1996-04-01' group by l_suppkey; create view max_revenue_cached as select max(total_revenue) as max_revenue from revenue_cached; select s_suppkey, s_name,s_address,s_phone, total_revenue from s_supplier_star, revenue_cached, max_revenue_cached where s_suppkey = supplier_no and total_revenue = max_revenue  order by s_suppkey; drop view revenue_cached; drop view max_revenue_cached;
 
 --Query 15 star impala
 create view v_revenue_star (supplier_no, total_revenue) as
