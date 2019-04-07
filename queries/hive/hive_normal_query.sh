@@ -199,7 +199,7 @@ echo ""|& tee -a $resultPath
 }
 
 if [ ! -d $1 ] && [ ! -d $2 ] && [ ! -d $3 ] && [ ! -d $4 ]; then
-cd /data/results
+cd /data/mydata
 resultPath=hive_mr_normal_query_sf"$1"_"$3"_result.txt
 rm -f $resultPath
 touch $resultPath
