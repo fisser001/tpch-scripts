@@ -95,7 +95,6 @@ echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 11."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 }
-}
 
 query12 () {
 echo "--------------------------------------STARTED QUERY 12."$i" ---------------------------------"|& tee -a $resultPath

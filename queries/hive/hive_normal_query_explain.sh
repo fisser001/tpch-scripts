@@ -35,7 +35,7 @@ echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 3."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
-echo "--------------------------------------STARTED QUERY 4"$i" ---------------------------------"|& tee -a $resultPath
+echo "--------------------------------------STARTED QUERY 4."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e " set hive.execution.engine=mr; explain select o_orderpriority, count(*) as order_count from o_orders where o_orderdate >= date '1993-07-01' and o_orderdate < date '1993-07-01' + interval '3' month and exists (select * from l_lineitem where l_orderkey = o_orderkey and l_commitdate < l_receiptdate) group by o_orderpriority order by o_orderpriority;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
