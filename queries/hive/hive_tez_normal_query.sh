@@ -3,7 +3,7 @@
 query1 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename; select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from l_lineitem  where l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename; select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from l_lineitem  where l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -12,7 +12,7 @@ echo ""|& tee -a $resultPath
 query2 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename; select s_acctbal,s_name, n_name,p_partkey,p_mfgr,s_address,s_phone,s_comment from p_part inner join ps_partsupp on p_partkey = ps_partkey and p_size = 15 and p_type like '%BRASS' inner join s_supplier on s_suppkey = ps_suppkey inner join n_nation on s_nationkey = n_nationkey inner join r_region on n_regionkey = r_regionkey and r_name = 'EUROPE' where ps_supplycost = (select min(ps_supplycost) from ps_partsupp, s_supplier, n_nation, r_region where p_partkey = ps_partkey and  s_suppkey = ps_suppkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = 'EUROPE')  order by s_acctbal desc,n_name,s_name,p_partkey limit 100;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename; set hive.auto.convert.join=false; set hive.auto.convert.join=false; select s_acctbal,s_name, n_name,p_partkey,p_mfgr,s_address,s_phone,s_comment from p_part inner join ps_partsupp on p_partkey = ps_partkey and p_size = 15 and p_type like '%BRASS' inner join s_supplier on s_suppkey = ps_suppkey inner join n_nation on s_nationkey = n_nationkey inner join r_region on n_regionkey = r_regionkey and r_name = 'EUROPE' where ps_supplycost = (select min(ps_supplycost) from ps_partsupp, s_supplier, n_nation, r_region where p_partkey = ps_partkey and  s_suppkey = ps_suppkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = 'EUROPE')  order by s_acctbal desc,n_name,s_name,p_partkey limit 100; set hive.auto.convert.join=true;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -198,7 +198,7 @@ echo "--------------------------------------Finished QUERY "$m"."$i"------------
 echo ""|& tee -a $resultPath
 }
 
-if [ ! -d $1 ] && [ ! -d $2 ] && [ ! -d $3 ]; then
+if [ ! -d $1 ] && [ ! -d $2 ] && [ ! -d $3 ] && [ ! -d $4 ]; then
 cd /data/results
 resultPath=hive_mr_normal_query_sf"$1"_"$3"_result.txt
 rm -f $resultPath
@@ -210,6 +210,7 @@ echo "-------------------------------------- HIVE QUERY NORMALIZED -------------
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
+single=array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22)
 multiple1=array(21,3,18,5,11,7,6,20,17,12,16,15,13,10,2,8,14,19,9,22,1,4)
 multiple2=array(2,6,17,14,16,19,10,9,2,15,8,5,22,12,7,13,18,1,4,20,3,11,21)
 multiple3=array(3,8,5,4,6,17,7,1,18,22,14,9,10,15,11,20,2,21,19,13,16,12,3)
@@ -218,24 +219,25 @@ multiple4=array(4,5,21,14,19,15,17,12,6,4,9,8,16,11,2,10,18,1,13,7,22,3,20)
 for i in $(seq 1 $2)
 $m=$i
 do
-if [ "$3" = "single" ]; then
-queuename="default"
-    for j in $(seq 1 22)
-    do    
-     query"$j"
-    done
-fi
-if [ "$3" = "multiple1" ]; then
-queuename=$3
+#if [ "$3" = "single" ]; then
+#queuename="default"
+    #for j in $(seq 1 22)
+    #do    
+    # query"$j"
+    #done
+#fi
+#if [ "$3" = "multiple1" ]; then
+queuename=$4
     for m in "${$3[@]}"
       do
         query"$m"
       done
-fi
+#fi
 done
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
-Paramter 2 for number of loops. Parameter 3 for mode which can be single or multiple1 or multiple2 or multiple3 or multiple4"
-echo "Example ./hive_mr_normal_query.sh 1 2 single"
+Paramter 2 for number of loops. Parameter 3 for mode which can be single or multiple1 or multiple2 or multiple3 or multiple4
+Parameter 4 is for queuename."
+echo "Example ./hive_mr_normal_query.sh 1 2 single default"
 exit 2
 fi
