@@ -228,7 +228,7 @@ do
 #fi
 #if [ "$3" = "multiple1" ]; then
 queuename=$4
-    for m in "${3[@]}"
+    for m in "${single[@]}"
     do
         query"$m"
     done
