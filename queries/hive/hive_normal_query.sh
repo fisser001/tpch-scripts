@@ -39,7 +39,7 @@ echo ""|& tee -a $resultPath
 query5 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; select n_name,sum(l_extendedprice * (1 - l_discount)) as revenue from c_customer, o_orders, l_lineitem, s_supplier, n_nation, r_region where c_custkey = o_custkey and l_orderkey = o_orderkey and l_suppkey = s_suppkey and c_nationkey = s_nationkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = 'ASIA' and o_orderdate >= date '1994-01-01' and o_orderdate < date '1994-01-01' + interval '1' year group by n_nameorder by revenue desc; set hive.auto.convert.join=true;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; select n_name,sum(l_extendedprice * (1 - l_discount)) as revenue from c_customer, o_orders, l_lineitem, s_supplier, n_nation, r_region where c_custkey = o_custkey and l_orderkey = o_orderkey and l_suppkey = s_suppkey and c_nationkey = s_nationkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = 'ASIA' and o_orderdate >= date '1994-01-01' and o_orderdate < date '1994-01-01' + interval '1' year group by n_name order by revenue desc; set hive.auto.convert.join=true;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -66,7 +66,7 @@ echo ""|& tee -a $resultPath
 query8 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  select o_year, sum(case	when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share from (select extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) as volume, n2.n_name as nation from p_part inner join l_lineitem on p_partkey = l_partkey inner join s_supplier on s_suppkey = l_suppkey inner join o_orders on l_orderkey = o_orderkey inner join c_customer on o_custkey = c_custkey inner join n_nation n1 on c_nationkey = n1.n_nationkey inner join n_nation n2 on s_nationkey = n2.n_nationkey inner join r_region on n1.n_regionkey = r_regionkey where r_name = 'AMERICA' and o_orderdate between date '1995-01-01' and date '1996-12-31' and p_type = 'ECONOMY ANODIZED STEEL') as all_nations group by o_year order by o_year;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  select o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share from (select extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) as volume, n2.n_name as nation from p_part inner join l_lineitem on p_partkey = l_partkey inner join s_supplier on s_suppkey = l_suppkey inner join o_orders on l_orderkey = o_orderkey inner join c_customer on o_custkey = c_custkey inner join n_nation n1 on c_nationkey = n1.n_nationkey inner join n_nation n2 on s_nationkey = n2.n_nationkey inner join r_region on n1.n_regionkey = r_regionkey where r_name = 'AMERICA' and o_orderdate between date '1995-01-01' and date '1996-12-31' and p_type = 'ECONOMY ANODIZED STEEL') as all_nations group by o_year order by o_year;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -75,7 +75,7 @@ echo ""|& tee -a $resultPath
 query9 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; select nation, o_year, sum(amount) as sum_profit from (select n_name as nation, extract(year from o_orderdate) as o_year,l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from p_part inner join l_lineitem on p_partkey = l_partkey inner join s_supplieron s_suppkey = l_suppkey inner join ps_partsupp on ps_suppkey = l_suppkey and ps_partkey = l_partkey inner join o_orders on o_orderkey = l_orderkey inner join n_nation on s_nationkey = n_nationkey where p_name like '%green%') as profit group by nation, o_year order by nation, o_year desc; set hive.auto.convert.join=true;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; select nation, o_year, sum(amount) as sum_profit from (select n_name as nation, extract(year from o_orderdate) as o_year,l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from p_part inner join l_lineitem on p_partkey = l_partkey inner join s_supplier on s_suppkey = l_suppkey inner join ps_partsupp on ps_suppkey = l_suppkey and ps_partkey = l_partkey inner join o_orders on o_orderkey = l_orderkey inner join n_nation on s_nationkey = n_nationkey where p_name like '%green%') as profit group by nation, o_year order by nation, o_year desc; set hive.auto.convert.join=true;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -84,7 +84,7 @@ echo ""|& tee -a $resultPath
 query10 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e " set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  select set hive.auto.convert.join=false; select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue,c_acctbal,n_name,c_address,c_phone,c_comment from c_customer, o_orders, l_lineitem, n_nation where c_custkey = o_custkey and l_orderkey = o_orderkey and o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month and l_returnflag = 'R' and c_nationkey = n_nationkey group by c_custkey, c_name, c_acctbal,c_phone,n_name,c_address, c_comment order by revenue desc limit 20; set hive.auto.convert.join=true;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e " set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue,c_acctbal,n_name,c_address,c_phone,c_comment from c_customer, o_orders, l_lineitem, n_nation where c_custkey = o_custkey and l_orderkey = o_orderkey and o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month and l_returnflag = 'R' and c_nationkey = n_nationkey group by c_custkey, c_name, c_acctbal,c_phone,n_name,c_address, c_comment order by revenue desc limit 20; set hive.auto.convert.join=true;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -129,7 +129,7 @@ echo ""|& tee -a $resultPath
 query15 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; create view v_revenue_denorm (supplier_no, total_revenue) as select l_suppkey,sum(l_extendedprice * (1 - l_discount)) from denormalized	 where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month group by l_suppkey;  select s_suppkey,s_name,s_address,s_phone,max(total_revenue) as total_revenue from denormalized, v_revenue_denorm  where s_suppkey = supplier_no group by s_suppkey,s_name,s_address,s_phone order by total_revenue desc limit 1; set hive.auto.convert.join=true;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; create view revenue_cached as select 	l_suppkey as supplier_no, 	sum(l_extendedprice * (1 - l_discount)) as total_revenue from 	l_lineitem where 	l_shipdate >= '1996-01-01' 	and l_shipdate < '1996-04-01' group by l_suppkey;  create view max_revenue_cached as select 	max(total_revenue) as max_revenue from 	revenue_cached;  select 	s_suppkey, 	s_name, 	s_address, 	s_phone, 	total_revenue from 	s_supplier, 	revenue_cached, 	max_revenue_cached where 	s_suppkey = supplier_no 	and total_revenue = max_revenue  order by s_suppkey; drop view revenue_cached; drop view max_revenue_cached;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -192,7 +192,7 @@ echo ""|& tee -a $resultPath
 query22 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; create view if not exists q22_customer_tmp_cached asselect c_acctbal, c_custkey,substr(c_phone, 1, 2) as cntrycode from c_customer where substr(c_phone, 1, 2) = '13' or substr(c_phone, 1, 2) = '31' or substr(c_phone, 1, 2) = '23' or substr(c_phone, 1, 2) = '29' or substr(c_phone, 1, 2) = '30' or substr(c_phone, 1, 2) = '18' or substr(c_phone, 1, 2) = '17'; create view if not exists q22_customer_tmp1_cached asselect avg(c_acctbal) as avg_acctbal from q22_customer_tmp_cached where c_acctbal > 0.00; create view if not exists q22_orders_tmp_cached as select o_custkey from o_orders group by o_custkey; set hive.strict.checks.cartesian.product=false; select cntrycode, count(1) as numcust, sum(c_acctbal) as totacctbal from (    select cntrycode, c_acctbal,avg_acctbal from q22_customer_tmp1_cached ct1 inner join (select cntrycode, c_acctbal from q22_orders_tmp_cached ot right outer join q22_customer_tmp_cached ct on ct.c_custkey = ot.o_custkey where o_custkey is null) ct2) a where c_acctbal > avg_acctbal group by cntrycode order by cntrycode; set hive.strict.checks.cartesian.product=true; drop view q22_customer_tmp1_cached; drop view q22_orders_tmp_cached; set hive.auto.convert.join=false;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=local;  set hive.auto.convert.join=false; create view if not exists q22_customer_tmp_cached as select c_acctbal, c_custkey,substr(c_phone, 1, 2) as cntrycode from c_customer where substr(c_phone, 1, 2) = '13' or substr(c_phone, 1, 2) = '31' or substr(c_phone, 1, 2) = '23' or substr(c_phone, 1, 2) = '29' or substr(c_phone, 1, 2) = '30' or substr(c_phone, 1, 2) = '18' or substr(c_phone, 1, 2) = '17'; create view if not exists q22_customer_tmp1_cached as select avg(c_acctbal) as avg_acctbal from q22_customer_tmp_cached where c_acctbal > 0.00; create view if not exists q22_orders_tmp_cached as select o_custkey from o_orders group by o_custkey; set hive.strict.checks.cartesian.product=false; select cntrycode, count(1) as numcust, sum(c_acctbal) as totacctbal from (    select cntrycode, c_acctbal,avg_acctbal from q22_customer_tmp1_cached ct1 inner join (select cntrycode, c_acctbal from q22_orders_tmp_cached ot right outer join q22_customer_tmp_cached ct on ct.c_custkey = ot.o_custkey where o_custkey is null) ct2) a where c_acctbal > avg_acctbal group by cntrycode order by cntrycode; set hive.strict.checks.cartesian.product=true; drop view q22_customer_tmp1_cached; drop view q22_orders_tmp_cached; set hive.auto.convert.join=false;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -200,7 +200,7 @@ echo ""|& tee -a $resultPath
 
 if [ ! -d $1 ] && [ ! -d $2 ] && [ ! -d $3 ] && [ ! -d $4 ]; then
 cd /data/mydata
-resultPath=hive_mr_normal_query_sf"$1"_"$3"_result.txt
+resultPath=hive_normal_query_sf"$1"_"$3"_result.txt
 rm -f $resultPath
 touch $resultPath
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------" |& tee -a $resultPath
@@ -233,22 +233,12 @@ fi
 
 
 for i in $(seq 1 $2)
-
 do
-#if [ "$3" = "single" ]; then
-#queuename="default"
-    #for j in $(seq 1 22)
-    #do    
-    # query"$j"
-    #done
-#fi
-#if [ "$3" = "multiple1" ]; then
 queuename=$4
     for m in "${array[@]}"
     do
         query"$m"
     done
-#fi
 done
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
