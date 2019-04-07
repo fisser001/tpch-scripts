@@ -210,6 +210,8 @@ echo "-------------------------------------- HIVE QUERY NORMALIZED -------------
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
+test = array(21 3 18 5 11 7 6 20 17 12 16 15 13 10 2 8 14 19 9 22 1 4)
+
 for i in $(seq 1 $2)
 do
 if [ "$3" = "single" ]; then
