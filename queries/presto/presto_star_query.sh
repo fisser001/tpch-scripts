@@ -237,6 +237,6 @@ else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
 Paramter 2 for number of loops. Parameter 3 for mode which can be single or multiple1 or multiple2 or multiple3 or multiple4
 Parameter 4 is for queuename."
-echo "Example ./hive_mr_normal_query.sh 1 2 single default"
+echo "Example ./hive_mr_normal_query.sh 1 2 single"
 exit 2
 fi
