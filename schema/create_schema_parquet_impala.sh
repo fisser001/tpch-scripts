@@ -92,7 +92,7 @@ echo ""
 echo "-------------------------------------- Finished creating partsupp normal ---------------------------------"
 echo ""
 echo ""
-rm -rf /opt/data/sf$2/normal/*
+#rm -rf /opt/data/sf$2/normal/*
 echo ""
 fi
 
@@ -155,7 +155,7 @@ echo ""
 echo "-------------------------------------- Finished creating partsupp star ---------------------------------"
 echo ""
 echo ""
-rm -rf /opt/data/sf$2/star/*
+#rm -rf /opt/data/sf$2/star/*
 echo ""
 fi
 
@@ -168,7 +168,7 @@ echo "-------------------------------------- Start creating denormalized -------
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/data/mydata/raw/sf$2/denormal/' OVERWRITE INTO TABLE denormalized_parquet_impala_tmp;"
 echo ""
-rm -rf /opt/data/sf$1/denormal/*
+#rm -rf /opt/data/sf$1/denormal/*
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; Create Table denormalized_parquet_impala stored as parquet as select * from denormalized_parquet_impala_tmp;"
 echo ""

@@ -91,7 +91,7 @@ echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table ps_partsupp_tmp;"
 echo "-------------------------------------- Finished creating partsupp normal ---------------------------------"
 echo ""
-rm -rf /data/mydata/raw/sf$2/normal/*
+#rm -rf /data/mydata/raw/sf$2/normal/*
 fi
 
 
@@ -151,7 +151,7 @@ echo ""
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table ps_partsupp_star_tmp;"
 echo "-------------------------------------- Finished creating partsupp star ---------------------------------"
-rm -rf /data/mydata/raw/sf$2/star/*
+#rm -rf /data/mydata/raw/sf$2/star/*
 echo ""
 fi
 
@@ -164,7 +164,7 @@ echo "-------------------------------------- Start creating denormalized -------
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/data/mydata/raw/sf$2/denormal/' OVERWRITE INTO TABLE denormalized_tmp;"
 echo ""
-rm -rf /data/mydata/raw/sf$2/denormal/*
+#rm -rf /data/mydata/raw/sf$2/denormal/*
 echo ""
 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; Create Table denormalized stored as orc as select * from denormalized_tmp;"
 echo ""
