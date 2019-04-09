@@ -5,7 +5,7 @@ echo "-------------------------------------- CREATE PATH IF NOT EXIST ----------
 mkdir -p /var/lib/docker/volumes/mydata/_data/raw/sf$1
 cd /var/lib/docker/volumes/mydata/_data/raw/sf$1
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------"
-echo "-------------------------------------- Path: /opt/data/ ---------------------------------"
+echo "-------------------------------------- Path: /var/lib/docker/volumes/mydata/_data/raw/sf$ ---------------------------------"
 
 echo "-------------------------------------- LOAD DATA  ----------------------------------------------"
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')

@@ -60,13 +60,13 @@ echo "-------------------------------------- Finished creating orders normal ---
 echo ""
 
 echo "-------------------------------------- Start creating part normal ---------------------------------"
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; CREATE TABLE p_part_tmp_parquet (p_partkey string, p_name string, p_mfgr string, p_brand string, p_type string, p_size int, p_container string, p_retailprice double, p_comment string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE;"
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; CREATE TABLE p_part_parquet_tmp (p_partkey string, p_name string, p_mfgr string, p_brand string, p_type string, p_size int, p_container string, p_retailprice double, p_comment string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE;"
 echo ""
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/data/mydata/raw/sf$2/normal/part' OVERWRITE INTO p_part_tmp_parquet;"
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; LOAD DATA LOCAL INPATH '/data/mydata/raw/sf$2/normal/part' OVERWRITE INTO TABLE p_part_parquet_tmp;"
 echo ""
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; Create Table p_part_parquet stored as parquet as select * from p_part_tmp_parquet;"
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; Create Table p_part_parquet stored as parquet as select * from p_part_parquet_tmp;"
 echo ""
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table p_part_tmp_parquet;"
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=mr; drop table p_part_parquet_tmp;"
 echo "-------------------------------------- Finished creating part normal ---------------------------------"
 echo ""
 

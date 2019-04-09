@@ -110,9 +110,6 @@ echo "--------------------------------------Finished QUERY 14."$i"--------------
 echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED QUERY 15."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< ""|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 15."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
