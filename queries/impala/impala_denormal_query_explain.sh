@@ -110,7 +110,7 @@ echo ""|& tee -a $resultPath
 
 echo "--------------------------------------STARTED  QUERY 15."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-impala-shell -q "create view v_revenue_denorm (supplier_no, total_revenue) as select l_suppkey,sum(l_extendedprice * (1 - l_discount)) from denormalized_parquet_impala where to_date(l_shipdate) >= to_date('1996-01-01') and to_date(l_shipdate) < to_date(date_add(cast('1996-01-01' as timestamp), interval 3 month)) group by l_suppkey; select s_suppkey,s_name,s_address,s_phone,max(total_revenue) as total_revenue from denormalized_parquet_impala, v_revenue_denorm  where s_suppkey = supplier_no group by s_suppkey,s_name,s_address,s_phone order by total_revenue desc limit 1; drop view v_revenue_denorm;"|& tee -a $resultPath
+impala-shell -q "explain create view v_revenue_denorm (supplier_no, total_revenue) as select l_suppkey,sum(l_extendedprice * (1 - l_discount)) from denormalized_parquet_impala where to_date(l_shipdate) >= to_date('1996-01-01') and to_date(l_shipdate) < to_date(date_add(cast('1996-01-01' as timestamp), interval 3 month)) group by l_suppkey; explain select s_suppkey,s_name,s_address,s_phone,max(total_revenue) as total_revenue from denormalized_parquet_impala, v_revenue_denorm  where s_suppkey = supplier_no group by s_suppkey,s_name,s_address,s_phone order by total_revenue desc limit 1; drop view v_revenue_denorm;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 15."$i"----------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
