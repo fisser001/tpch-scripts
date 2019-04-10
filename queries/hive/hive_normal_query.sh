@@ -247,7 +247,7 @@ test=""
     for m in "${array[@]}"
     do
         query"$m"
-        #echo $test1
+        echo $test1
     done
     /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "'"$test1"'"";
 done
