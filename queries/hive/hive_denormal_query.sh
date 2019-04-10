@@ -112,55 +112,46 @@ test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
 test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
-
-
 query17 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select sum(l_extendedprice) / 7.0 as avg_yearly from denormalized a where p_brand = 'Brand#23' and p_container = 'MED BOX'  and l_quantity < ( select 0.2 * avg(l_quantity) from denormalized b where a.l_partkey = b.p_partkey );"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select sum(l_extendedprice) / 7.0 as avg_yearly from denormalized a where p_brand = 'Brand#23' and p_container = 'MED BOX'  and l_quantity < ( select 0.2 * avg(l_quantity) from denormalized b where a.l_partkey = b.p_partkey );"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query18 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$execution; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum(l_quantity)  from denormalized group by c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice  having sum(l_quantity) > 300  order by o_totalprice desc, o_orderdate;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$execution; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum(l_quantity)  from denormalized group by c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice  having sum(l_quantity) > 300  order by o_totalprice desc, o_orderdate;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query19 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select sum(l_extendedprice * (1 - l_discount) ) as revenue   from denormalized  where ( p_brand = 'Brand#12'and p_container in ( 'SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')   and l_quantity >= 1 and l_quantity <= 1 + 10 and p_size between 1 and 5 and l_shipmode in ('AIR', 'AIR REG')   and l_shipinstruct = 'DELIVER IN PERSON') or (p_brand = 'Brand#23'   and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') and l_quantity >= 10   and l_quantity <= 10 + 10 and p_size between 1 and 10 and l_shipmode in ('AIR', 'AIR REG')   and l_shipinstruct = 'DELIVER IN PERSON' ) or (p_brand = 'Brand#34' and p_container in ( 'LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')  and l_quantity >= 20 and l_quantity <= 20 + 10 and p_size between 1 and 15 and l_shipmode in ('AIR', 'AIR REG')   and l_shipinstruct = 'DELIVER IN PERSON');"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select sum(l_extendedprice * (1 - l_discount) ) as revenue   from denormalized  where ( p_brand = 'Brand#12'and p_container in ( 'SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')   and l_quantity >= 1 and l_quantity <= 1 + 10 and p_size between 1 and 5 and l_shipmode in ('AIR', 'AIR REG')   and l_shipinstruct = 'DELIVER IN PERSON') or (p_brand = 'Brand#23'   and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') and l_quantity >= 10   and l_quantity <= 10 + 10 and p_size between 1 and 10 and l_shipmode in ('AIR', 'AIR REG')   and l_shipinstruct = 'DELIVER IN PERSON' ) or (p_brand = 'Brand#34' and p_container in ( 'LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')  and l_quantity >= 20 and l_quantity <= 20 + 10 and p_size between 1 and 15 and l_shipmode in ('AIR', 'AIR REG')   and l_shipinstruct = 'DELIVER IN PERSON');"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query20 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query21 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  set hive.auto.convert.join=false; select s_name, count(*) as numwait from denormalized l1 where  o_orderstatus = 'F' and l1.l_receiptdate > l1.l_commitdate and exists ( select * from denormalized l2 where l2.l_orderkey = l1.l_orderkey and l2.l_suppkey <> l1.l_suppkey ) and not exists ( select * from denormalized l3 where l3.l_orderkey = l1.l_orderkey and l3.l_suppkey <> l1.l_suppkey and l3.l_receiptdate > l3.l_commitdate ) and s_nationkey = n2_nationkey and n2_name = 'SAUDI ARABIA' group by s_name order by numwait desc, s_name limit 100; set hive.auto.convert.join=true;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  set hive.auto.convert.join=false; select s_name, count(*) as numwait from denormalized l1 where  o_orderstatus = 'F' and l1.l_receiptdate > l1.l_commitdate and exists ( select * from denormalized l2 where l2.l_orderkey = l1.l_orderkey and l2.l_suppkey <> l1.l_suppkey ) and not exists ( select * from denormalized l3 where l3.l_orderkey = l1.l_orderkey and l3.l_suppkey <> l1.l_suppkey and l3.l_receiptdate > l3.l_commitdate ) and s_nationkey = n2_nationkey and n2_name = 'SAUDI ARABIA' group by s_name order by numwait desc, s_name limit 100; set hive.auto.convert.join=true;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query22 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
+
 
 if [ ! -d $1 ] && [ ! -d $2 ] && [ ! -d $3 ] && [ ! -d $4 ] && [ ! -d $5 ] && [ ! -d $6 ]; then
 cd /data/mydata
