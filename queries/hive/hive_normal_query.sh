@@ -188,19 +188,18 @@ if [ $3 = "multiple4" ]; then
 array=(4 5 21 14 19 15 17 12 6 4 9 8 16 11 2 10 18 1 13 7 22 3 20)
 fi
 
-
-for i in $(seq 1 $2)
-do
 queuename=$4
 engine=$5
 framework=$6
 test1=""
+for i in $(seq 1 $2)
+do
     for m in "${array[@]}"
     do
         query"$m"
     done
-    /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework; $test1"|& tee -a $resultPath
 done
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework; $test1"|& tee -a $resultPath
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
 Paramter 2 for number of loops. Parameter 3 for mode which can be single or multiple1 or multiple2 or multiple3 or multiple4
