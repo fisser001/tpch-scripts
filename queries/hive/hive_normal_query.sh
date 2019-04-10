@@ -12,7 +12,7 @@ test1="$test1 select from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:MM');"
 test1="$test1 select from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:MM');"
 test1="$test1 select 'Finished QUERY $m.$i';"
 #!sh echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-#!sh echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
+test1="$test1 !sh echo ""--------------------------------------Finished QUERY $m.$i--------------------------------"";"
 #!sh echo ""|& tee -a $resultPath
 }
 
