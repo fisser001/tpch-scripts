@@ -1,8 +1,8 @@
 #!/bin/bash
 
 query1 () {
-!sh echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-!sh echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
+!sh echo '--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------|& tee -a $resultPath'
+!sh echo '$(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath'
 #/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e 
 "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from l_lineitem  where l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;"|& tee -a $resultPath
 !sh echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
@@ -214,7 +214,7 @@ echo ""|& tee -a $resultPath
 
 
 if [ $3 = "single" ]; then
-array=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 )
+array=( 1 2 ) #3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 )
 fi
 
 if [ $3 = "multiple1" ]; then
@@ -239,11 +239,13 @@ do
 queuename=$4
 engine=$5
 framework=$6
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e
+test=""
+#/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e
     for m in "${array[@]}"
     do
-        query"$m"
+        test= $test " " query"$m"
     done
+    echo test;
 done
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
