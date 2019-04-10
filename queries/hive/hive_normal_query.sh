@@ -247,7 +247,7 @@ test=""
     for m in "${array[@]}"
     do
         query"$m"
-        $test = $test $test1 " "
+        $test=$test $test1 " "
     done
     echo test;
 done
