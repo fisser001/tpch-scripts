@@ -2,7 +2,7 @@
 
 if [ ! -d $1 ] && [ ! -d $2 ]; then
 cd /data/results
-resultPath=hive_denormal_query_sf"$1"_result_explain.txt
+resultPath=hive_"$2"_denormal_query_sf"$1"_result_explain.txt
 rm -f $resultPath
 touch $resultPath
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------"|& tee -a $resultPath|& tee -a $resultPath

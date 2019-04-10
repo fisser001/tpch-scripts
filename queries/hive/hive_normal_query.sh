@@ -1,21 +1,23 @@
 #!/bin/bash
 
 query1 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from l_lineitem  where l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+!sh echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
+!sh echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
+#/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e 
+"set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from l_lineitem  where l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;"|& tee -a $resultPath
+!sh echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
+!sh echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
+!sh echo ""|& tee -a $resultPath
 }
 
 query2 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  set hive.auto.convert.join=false; set hive.auto.convert.join=false; select s_acctbal,s_name, n_name,p_partkey,p_mfgr,s_address,s_phone,s_comment from p_part inner join ps_partsupp on p_partkey = ps_partkey and p_size = 15 and p_type like '%BRASS' inner join s_supplier on s_suppkey = ps_suppkey inner join n_nation on s_nationkey = n_nationkey inner join r_region on n_regionkey = r_regionkey and r_name = 'EUROPE' where ps_supplycost = (select min(ps_supplycost) from ps_partsupp, s_supplier, n_nation, r_region where p_partkey = ps_partkey and  s_suppkey = ps_suppkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = 'EUROPE')  order by s_acctbal desc,n_name,s_name,p_partkey limit 100; set hive.auto.convert.join=true;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+!sh echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
+!sh echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
+#/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e 
+"set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  set hive.auto.convert.join=false; set hive.auto.convert.join=false; select s_acctbal,s_name, n_name,p_partkey,p_mfgr,s_address,s_phone,s_comment from p_part inner join ps_partsupp on p_partkey = ps_partkey and p_size = 15 and p_type like '%BRASS' inner join s_supplier on s_suppkey = ps_suppkey inner join n_nation on s_nationkey = n_nationkey inner join r_region on n_regionkey = r_regionkey and r_name = 'EUROPE' where ps_supplycost = (select min(ps_supplycost) from ps_partsupp, s_supplier, n_nation, r_region where p_partkey = ps_partkey and  s_suppkey = ps_suppkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = 'EUROPE')  order by s_acctbal desc,n_name,s_name,p_partkey limit 100; set hive.auto.convert.join=true;"|& tee -a $resultPath
+!sh echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
+!sh echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
+!sh echo ""|& tee -a $resultPath
 }
 
 query3 () {
@@ -174,7 +176,7 @@ echo ""|& tee -a $resultPath
 query20 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select s_name,s_address from s_supplier, n_nation where s_suppkey in (select ps_suppkey from ps_partsupp where ps_partkey in (select p_partkey from p_part where p_name like 'forest%') and ps_availqty > (select 0.5 * sum(l_quantity) from l_lineitem where l_partkey = ps_partkey and l_suppkey = ps_suppkey and l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year)) and s_nationkey = n_nationkey and n_name = 'CANADA'order by s_name;"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select s_name,s_address from s_supplier, n_nation where s_suppkey in (select ps_suppkey from ps_partsupp where ps_partkey in (select p_partkey from p_part where p_name like 'forest%') and ps_availqty > (select 0.5 * sum(l_quantity) from l_lineitem where l_partkey = ps_partkey and l_suppkey = ps_suppkey and l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year)) and s_nationkey = n_nationkey and n_name = 'CANADA' order by s_name;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -237,6 +239,7 @@ do
 queuename=$4
 engine=$5
 framework=$6
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000
     for m in "${array[@]}"
     do
         query"$m"
