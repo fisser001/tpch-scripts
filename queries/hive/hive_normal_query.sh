@@ -239,7 +239,7 @@ do
 queuename=$4
 engine=$5
 framework=$6
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -f
     for m in "${array[@]}"
     do
         query"$m"
