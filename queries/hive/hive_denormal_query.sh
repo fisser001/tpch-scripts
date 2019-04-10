@@ -1,139 +1,118 @@
 #!/bin/bash
 
 query1 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from denormalized where l_shipdate <= date '1998-12-01' - interval '90' day group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from denormalized where l_shipdate <= date '1998-12-01' - interval '90' day group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
+
 query2 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query3 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select o_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, o_orderdate, o_shippriority  from denormalized where c_mktsegment = 'BUILDING' and o_orderdate < date '1995-03-15'  and l_shipdate > date '1995-03-15'  group by o_orderkey, o_orderdate, o_shippriority  order by revenue desc, o_orderdate limit 10;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select o_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, o_orderdate, o_shippriority  from denormalized where c_mktsegment = 'BUILDING' and o_orderdate < date '1995-03-15'  and l_shipdate > date '1995-03-15'  group by o_orderkey, o_orderdate, o_shippriority  order by revenue desc, o_orderdate limit 10;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query4 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select o_orderpriority, count (distinct o_orderkey) as order_count  from denormalized where o_orderdate >= date '1993-07-01' and o_orderdate < date '1993-07-01' + interval '3' month  and l_commitdate < l_receiptdate  group by o_orderpriority  order by o_orderpriority;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select o_orderpriority, count (distinct o_orderkey) as order_count  from denormalized where o_orderdate >= date '1993-07-01' and o_orderdate < date '1993-07-01' + interval '3' month  and l_commitdate < l_receiptdate  group by o_orderpriority  order by o_orderpriority;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query5 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select n_name, sum(l_extendedprice * (1 - l_discount)) as revenue from denormalized where r_name = 'ASIA' and o_orderdate >= date '1994-01-01' and o_orderdate < date '1994-01-01' + interval '1' year group by n_name order by revenue desc;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select n_name, sum(l_extendedprice * (1 - l_discount)) as revenue from denormalized where r_name = 'ASIA' and o_orderdate >= date '1994-01-01' and o_orderdate < date '1994-01-01' + interval '1' year group by n_name order by revenue desc;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
+
 
 query6 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select sum(l_extendedprice*l_discount) as revenue from denormalized where l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select sum(l_extendedprice*l_discount) as revenue from denormalized where l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
+
 query7 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select  n2_name, n_name,   year(l_shipdate) as l_year, sum(l_extendedprice * (1 - l_discount)) as revenue from denormalized where ((n2_name = 'FRANCE' and n_name = 'GERMANY') or (n2_name = 'GERMANY'  and n_name = 'FRANCE'))  and l_shipdate between date '1995-01-01' and date '1996-12-31'  group by n2_name, n_name, year(l_shipdate)  order by n2_name, n_name, l_year;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select  n2_name, n_name,   year(l_shipdate) as l_year, sum(l_extendedprice * (1 - l_discount)) as revenue from denormalized where ((n2_name = 'FRANCE' and n_name = 'GERMANY') or (n2_name = 'GERMANY'  and n_name = 'FRANCE'))  and l_shipdate between date '1995-01-01' and date '1996-12-31'  group by n2_name, n_name, year(l_shipdate)  order by n2_name, n_name, l_year;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query8 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share  from ( select year(o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume,  n2_name as nation  from denormalized where r_name = 'AMERICA' and o_orderdate between date '1995-01-01'  and date '1996-12-31'  and p_type = 'ECONOMY ANODIZED STEEL') as all_nations  group by o_year  order by  o_year;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share  from ( select year(o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume,  n2_name as nation  from denormalized where r_name = 'AMERICA' and o_orderdate between date '1995-01-01'  and date '1996-12-31'  and p_type = 'ECONOMY ANODIZED STEEL') as all_nations  group by o_year  order by  o_year;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query9 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select nation, o_year, sum(amount) as sum_profit from ( select n2_name as nation, extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from denormalized where p_name like '%green%' ) as profit group by nation, o_year order by nation, o_year desc;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select nation, o_year, sum(amount) as sum_profit from ( select n2_name as nation, extract(year from o_orderdate) as o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from denormalized where p_name like '%green%' ) as profit group by nation, o_year order by nation, o_year desc;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query10 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue, c_acctbal,  n_name, c_address, c_phone, c_comment from denormalized  where o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month  and l_returnflag = 'R'  group by c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment  order by revenue  desc limit 20;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue, c_acctbal,  n_name, c_address, c_phone, c_comment from denormalized  where o_orderdate >= date '1993-10-01' and o_orderdate < date '1993-10-01' + interval '3' month  and l_returnflag = 'R'  group by c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment  order by revenue  desc limit 20;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query11 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query12 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_shipmode, sum(case when o_orderpriority ='1-URGENT' or o_orderpriority ='2-HIGH' then 1 else 0 end) as high_line_count, sum(case when o_orderpriority <> '1-URGENT' and o_orderpriority <> '2-HIGH' then 1 else 0 end) as low_line_count from denormalized where l_shipmode in ('MAIL', 'SHIP') and l_commitdate < l_receiptdate and l_shipdate < l_commitdate and l_receiptdate >= date '1994-01-01' and l_receiptdate < date '1994-01-01' + interval '1' year group by l_shipmode order by l_shipmode;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_shipmode, sum(case when o_orderpriority ='1-URGENT' or o_orderpriority ='2-HIGH' then 1 else 0 end) as high_line_count, sum(case when o_orderpriority <> '1-URGENT' and o_orderpriority <> '2-HIGH' then 1 else 0 end) as low_line_count from denormalized where l_shipmode in ('MAIL', 'SHIP') and l_commitdate < l_receiptdate and l_shipdate < l_commitdate and l_receiptdate >= date '1994-01-01' and l_receiptdate < date '1994-01-01' + interval '1' year group by l_shipmode order by l_shipmode;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query13 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query14 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select 100.00 * sum(case when p_type like 'PROMO%' then l_extendedprice*(1-l_discount) else 0 end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue from denormalized where l_partkey = p_partkey and l_shipdate >= date '1995-09-01' and l_shipdate < date '1995-09-01' + interval '1' month;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select 100.00 * sum(case when p_type like 'PROMO%' then l_extendedprice*(1-l_discount) else 0 end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue from denormalized where l_partkey = p_partkey and l_shipdate >= date '1995-09-01' and l_shipdate < date '1995-09-01' + interval '1' month;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query15 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_suppkey as supplier_no,sum(l_extendedprice * (1 - l_discount)) as total_revenue, s_name,s_address,s_phone from denormalized	 where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month group by l_suppkey, s_name,s_address,s_phone order by total_revenue desc limit 1;"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_suppkey as supplier_no,sum(l_extendedprice * (1 - l_discount)) as total_revenue, s_name,s_address,s_phone from denormalized	 where l_shipdate >= date '1996-01-01' and l_shipdate < date '1996-01-01' + interval '3' month group by l_suppkey, s_name,s_address,s_phone order by total_revenue desc limit 1;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
 
 query16 () {
-echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select p_brand, p_type, p_size, count(distinct s_suppkey) as supplier_cnt  from denormalized  where p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%'  and p_size in (49, 14, 23, 45, 19, 3, 36, 9) and s_comment not like '%Customer%Complaints%' group by p_brand, p_type, p_size  order by  supplier_cnt desc,  p_brand,  p_type, p_size; "|& tee -a $resultPath
-echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
-echo ""|& tee -a $resultPath
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select p_brand, p_type, p_size, count(distinct s_suppkey) as supplier_cnt  from denormalized  where p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%'  and p_size in (49, 14, 23, 45, 19, 3, 36, 9) and s_comment not like '%Customer%Complaints%' group by p_brand, p_type, p_size  order by  supplier_cnt desc,  p_brand,  p_type, p_size;"
+test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
+test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
+
+
 
 query17 () {
 echo "--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------"|& tee -a $resultPath
@@ -217,17 +196,18 @@ array=(4 5 21 14 19 15 17 12 6 4 9 8 16 11 2 10 18 1 13 7 22 3 20)
 fi
 
 
-for i in $(seq 1 $2)
-do
 queuename=$4
 engine=$5
 framework=$6
+test1=""
+for i in $(seq 1 $2)
+do
     for m in "${array[@]}"
     do
         query"$m"
     done
-
 done
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set tez.am.container.reuse.enabled=true; $test1"|& tee -a $resultPath
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
 Paramter 2 for number of loops. Parameter 3 for mode which can be single or multiple1 or multiple2 or multiple3 or multiple4
