@@ -7,7 +7,7 @@ test1=""
 test1=$test "!sh echo '--------------------------------------STARTED QUERY "$m"."$i" ---------------------------------;'"
 #!sh echo '$(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath'
 #/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e 
-test1=$test "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from l_lineitem  where l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;"|& tee -a $resultPath
+test1=$test "'set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price,  sum(l_extendedprice*(1-l_discount)) as sum_disc_price,  sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,  avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price,  avg(l_discount) as avg_disc, count(*) as count_order  from l_lineitem  where l_shipdate <= date '1998-12-01' - interval '90' day  group by l_returnflag, l_linestatus  order by l_returnflag, l_linestatus;'"
 #!sh echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 #!sh echo "--------------------------------------Finished QUERY "$m"."$i"--------------------------------"|& tee -a $resultPath
 #!sh echo ""|& tee -a $resultPath
@@ -249,7 +249,7 @@ test=""
         query"$m"
         echo $test1
     done
-    echo test;
+    /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e test;
 done
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
