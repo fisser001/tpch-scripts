@@ -44,7 +44,7 @@ test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.
 
 query7 () {
 test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
-test1="$test1 set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework;  set hive.auto.convert.join=false; select supp_nation, cust_nation,l_year, sum(volume) as revenue from (select n1.n_name as supp_nation, n2.n_name as cust_nation, extract(year from l_shipdate) as l_year, (l_extendedprice * (1 - l_discount)) as volume from s_supplier inner join l_lineitem on s_suppkey = l_suppkey inner join o_orders on o_orderkey = l_orderkey inner join c_customer on c_custkey = o_custkey inner join n_nation n1 on s_nationkey = n1.n_nationkey inner join n_nation n2 on c_nationkey = n2.n_nationkey where ((n1.n_name = 'FRANCE' and n2.n_name = 'GERMANY') or (n1.n_name = 'GERMANY' and n2.n_name = 'FRANCE')) and l_shipdate between date '1995-01-01' and date '1996-12-31') as shipping group by supp_nation,cust_nation,l_year order by supp_nation, cust_nation, l_year; set hive.auto.convert.join=true;"
+test1="$test1 set hive.auto.convert.join=false; select supp_nation, cust_nation,l_year, sum(volume) as revenue from (select n1.n_name as supp_nation, n2.n_name as cust_nation, extract(year from l_shipdate) as l_year, (l_extendedprice * (1 - l_discount)) as volume from s_supplier inner join l_lineitem on s_suppkey = l_suppkey inner join o_orders on o_orderkey = l_orderkey inner join c_customer on c_custkey = o_custkey inner join n_nation n1 on s_nationkey = n1.n_nationkey inner join n_nation n2 on c_nationkey = n2.n_nationkey where ((n1.n_name = 'FRANCE' and n2.n_name = 'GERMANY') or (n1.n_name = 'GERMANY' and n2.n_name = 'FRANCE')) and l_shipdate between date '1995-01-01' and date '1996-12-31') as shipping group by supp_nation,cust_nation,l_year order by supp_nation, cust_nation, l_year; set hive.auto.convert.join=true;"
 test1="$test1 select from_unixtime(unix_timestamp(current_timestamp)+7200);"
 test1="$test1 !sh echo '--------------------------------------Finished QUERY $m.$i--------------------------------';"
 }
@@ -199,7 +199,7 @@ do
         query"$m"
     done
 done
-/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework; $test1"|& tee -a $resultPath
+/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "set tez.am.container.reuse.enabled=true; set hive.execution.engine=$engine; set mapred.job.queue.name=$queuename; set tez.queue.name=$queuename;  SET mapreduce.framework.name=$framework; $test1"|& tee -a $resultPath
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
 Paramter 2 for number of loops. Parameter 3 for mode which can be single or multiple1 or multiple2 or multiple3 or multiple4
