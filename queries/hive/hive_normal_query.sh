@@ -245,7 +245,8 @@ test=""
 #/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e
     for m in "${array[@]}"
     do
-        test= $test " " query"$m"
+        test2= query"$m"
+        $test = $test " " $test2
     done
     echo test;
 done
