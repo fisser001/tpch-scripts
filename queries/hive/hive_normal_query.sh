@@ -249,7 +249,7 @@ test=""
         query"$m"
         echo $test1
     done
-    /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "'"$test1"'"";
+    /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e "'"$test1"'";
 done
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. 
