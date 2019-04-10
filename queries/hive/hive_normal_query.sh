@@ -256,8 +256,3 @@ Parameter 6 is for local or yarn."
 echo "Example ./hive_mr_normal_query.sh 1 2 single default tez yarn"
 exit 2
 fi
-
-#/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e 'show tables; !sh echo "STARED QUERY 1.1";'
-
-
-SELECT to_utc_timestamp (FROM_UNIXTIME(UNIX_TIMESTAMP()),"GMT");
