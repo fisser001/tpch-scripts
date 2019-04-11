@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -d $1 ]; then
-cd /data/results
+cd /data/mydata
 resultPath=drill_star_query_sf"$1"_result_explain.txt
 rm -f $resultPath
 touch $resultPath
@@ -12,8 +12,6 @@ echo "-------------------------------------- DRILL QUERY STAR ------------------
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
-for i in $(seq 1 $2)
-do
 echo "--------------------------------------STARTED QUERY 1."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 /opt/drill/apache-drill-1.15.0/bin/sqlline -u jdbc:drill:zk=zookeeper:2181 <<< "explain plan for select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from hive.lo_lineitem_orders_parquet_star where l_shipdate <= date'1998-12-01' - interval '90' day group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"|& tee -a $resultPath
@@ -161,7 +159,7 @@ echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 22."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
-done
+
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. Paramter 2 for number of loops."
 echo "Example ./imapalatest.sh 1 2"

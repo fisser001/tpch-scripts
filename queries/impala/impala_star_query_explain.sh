@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -d $1 ]; then
-cd /data/results
+cd /data/mydata
 resultPath=impala_star_query_sf"$1"_result_explain.txt
 rm -f $resultPath
 touch $resultPath
@@ -16,8 +16,6 @@ echo "--------------------------------------  Invalidate Schema  ---------------
 impala-shell -q "INVALIDATE METADATA;"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 
-for i in $(seq 1 $2)
-do
 echo "--------------------------------------STARTED QUERY 1."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 impala-shell -q "explain select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from lo_lineitem_orders_star_parquet_impala where l_shipdate <= to_date(date_sub(cast('1998-12-01' as timestamp), interval 90 day)) group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"|& tee -a $resultPath
@@ -169,7 +167,7 @@ echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 22."$i"----------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-done
+
 else
 echo "Parameters have to be defined for this script. Paramater 1 for scale factor. Paramter 2 for number of loops."
 echo "Example ./imapalatest.sh 1 2"

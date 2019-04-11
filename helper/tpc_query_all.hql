@@ -1317,6 +1317,34 @@ order by
 nation,
 o_year desc;
 
+--Query 9 star impala ok
+select
+nation,
+o_year,
+sum(amount) as sum_profit
+from (
+select
+b.n_name as nation,
+extract(year from c.o_orderdate) as o_year,
+c.l_extendedprice * (1 - c.l_discount) - d.ps_supplycost * c.l_quantity as amount
+from p_part_star a inner join 
+lo_lineitem_orders_star c 
+on a.p_partkey = c.l_partkey 
+inner join 
+s_supplier_star b 
+on b.s_suppkey = c.l_suppkey inner join 
+ps_partsupp_star d on 
+d.ps_suppkey = c.l_suppkey and d.ps_partkey = c.l_partkey
+where
+a.p_name like '%green%'
+) as profit
+group by
+nation,
+o_year
+order by
+nation,
+o_year desc;
+
 --Query 10 raw / presto / drill ok
 select
 c_custkey,
@@ -1577,6 +1605,8 @@ order by
 value desc;
 
 --Query 11 star impala ok
+drop view q11_part_tmp_cached;
+drop view q11_sum_tmp_cached;
 create view q11_part_tmp_cached as
 select ps_partkey,sum(ps_supplycost * ps_availqty) as part_value
 from ps_partsupp_star,s_supplier_star
@@ -1586,15 +1616,15 @@ group by ps_partkey;
 create view q11_sum_tmp_cached as
 select sum(part_value) as total_value
 from q11_part_tmp_cached;
-
+set hive.strict.checks.cartesian.product=false;
 select ps_partkey, part_value as value
 from (select ps_partkey,part_value,total_value 
-from q11_part_tmp_cached join q11_sum_tmp_cached
+from q11_part_tmp_cached inner join q11_sum_tmp_cached
 ) a
 where part_value > total_value * 0.0001
 order by
 value desc;
-
+set hive.strict.checks.cartesian.product=true;
 drop view q11_part_tmp_cached;
 drop view q11_sum_tmp_cached;
 
