@@ -3,7 +3,7 @@
 if [ ! -d $1 ] && [ ! -d $2 ]; then
 echo "-------------------------------------- CREATE PATH IF NOT EXIST ---------------------------------"
 mkdir -p /data/mydata/raw/sf$1
-cd /var/lib/docker/volumes/mydata/_data/raw/sf$1
+cd /data/mydata/raw/sf$1
 echo "-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------"
 echo "-------------------------------------- Path: /var/lib/docker/volumes/mydata/_data/raw/sf$ ---------------------------------"
 

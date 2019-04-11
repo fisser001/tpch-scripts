@@ -10,7 +10,7 @@ docker volume create hadoop_namenode -d local-persist -o mountpoint=/data/hadoop
 docker volume create hadoop_historyserver -d local-persist -o mountpoint=/data/hadoop_historyserver
 docker volume create pgdata -d local-persist -o mountpoint=/data/pgdata
 docker volume create hive_metastore -d local-persist -o mountpoint=/data/hive_metastore
-docker volume create hadoop_resourcemanager -d local-persist -o mountpoint=/data/rhadoop_resourcemanager
+docker volume create hadoop_resourcemanager -d local-persist -o mountpoint=/data/hadoop_resourcemanager
 docker volume create hadoop_nodemanager1 -d local-persist -o mountpoint=/data/hadoop_nodemanager1
 docker volume create hadoop_nodemanager2 -d local-persist -o mountpoint=/data/hadoop_nodemanager2
 fi
