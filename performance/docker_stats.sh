@@ -3,11 +3,11 @@
 if [ ! -d $1 ]; then
 
 fileName=$1
-mkdir -p ./results/$fileName
+mkdir -p ./mydata/$fileName
 while true
 do
 echo "---------------------------------------------------"
-resultPath=results/$fileName/$fileName"_$(date '+%d-%m-%Y_%H:%M:%S:%3N')".csv
+resultPath=mydata/$fileName/$fileName"_$(date '+%d-%m-%Y_%H:%M:%S:%3N')".csv
 docker stats --no-stream|& tee -a $resultPath
 echo "---------------------------------------------------"
 echo ""
