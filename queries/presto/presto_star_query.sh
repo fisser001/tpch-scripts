@@ -127,6 +127,7 @@ query15 () {
 echo "--------------------------------------STARTED QUERY 15."$i" ---------------------------------"|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 15."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
+}
 
 query16 () {
 echo "--------------------------------------STARTED QUERY 16."$i" ---------------------------------"|& tee -a $resultPath
