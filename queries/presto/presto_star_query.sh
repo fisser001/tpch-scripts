@@ -3,7 +3,7 @@
 query1 () {
 echo "--------------------------------------STARTED QUERY 1."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from lo_lineitem_orders_star where l_shipdate <= date '1998-12-01' - interval '90' day group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from lo_lineitem_orders_star where l_shipdate <= date '1998-12-01' - interval '90' day group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 1."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -18,7 +18,7 @@ echo ""|& tee -a $resultPath
 query3 () {
 echo "--------------------------------------STARTED QUERY 3."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select l_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, o_orderdate, o_shippriority from c_customer_star inner join  lo_lineitem_orders_star on c_custkey = o_custkey where c_mktsegment = 'BUILDING' and o_orderdate < date '1995-03-15' and l_shipdate > date '1995-03-15' group by l_orderkey, o_orderdate, o_shippriority order by revenue desc, o_orderdate limit 10;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',l_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, o_orderdate, o_shippriority from c_customer_star inner join  lo_lineitem_orders_star on c_custkey = o_custkey where c_mktsegment = 'BUILDING' and o_orderdate < date '1995-03-15' and l_shipdate > date '1995-03-15' group by l_orderkey, o_orderdate, o_shippriority order by revenue desc, o_orderdate limit 10;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 3."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -27,7 +27,7 @@ echo ""|& tee -a $resultPath
 query4 () {
 echo "--------------------------------------STARTED QUERY 4."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select o_orderpriority, count (distinct o_orderkey) as order_count  from lo_lineitem_orders_star where o_orderdate >= date '1993-07-01' and o_orderdate < date '1993-07-01' + interval '3' month  and l_commitdate < l_receiptdate  group by o_orderpriority  order by o_orderpriority; "|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',o_orderpriority, count (distinct o_orderkey) as order_count  from lo_lineitem_orders_star where o_orderdate >= date '1993-07-01' and o_orderdate < date '1993-07-01' + interval '3' month  and l_commitdate < l_receiptdate  group by o_orderpriority  order by o_orderpriority; "|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 4."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -36,7 +36,7 @@ echo ""|& tee -a $resultPath
 query5 () {
 echo "--------------------------------------STARTED QUERY 5."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select c.n_name, sum(l_extendedprice * (1 - l_discount)) as revenue from c_customer_star a , lo_lineitem_orders_star b, s_supplier_star c where a.c_custkey = b.o_custkey and b.l_suppkey = c.s_suppkey and c_nationkey = s_nationkey and c.r_name = 'ASIA' and b.o_orderdate >= date '1994-01-01' and b.o_orderdate < date '1994-01-01' + interval '1' year group by c.n_name order by revenue desc;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',c.n_name, sum(l_extendedprice * (1 - l_discount)) as revenue from c_customer_star a , lo_lineitem_orders_star b, s_supplier_star c where a.c_custkey = b.o_custkey and b.l_suppkey = c.s_suppkey and c_nationkey = s_nationkey and c.r_name = 'ASIA' and b.o_orderdate >= date '1994-01-01' and b.o_orderdate < date '1994-01-01' + interval '1' year group by c.n_name order by revenue desc;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 5."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -45,7 +45,7 @@ echo ""|& tee -a $resultPath
 query6 () {
 echo "--------------------------------------STARTED QUERY 6."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select sum(l_extendedprice*l_discount) as revenue from lo_lineitem_orders_star where l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',sum(l_extendedprice*l_discount) as revenue from lo_lineitem_orders_star where l_shipdate >= date '1994-01-01' and l_shipdate < date '1994-01-01' + interval '1' year and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 6."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -54,7 +54,7 @@ echo ""|& tee -a $resultPath
 query7 () {
 echo "--------------------------------------STARTED QUERY 7."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select supp_nation, cust_nation, l_year, sum(volume) as revenue from ( select a.n_name as supp_nation, c.n_name as cust_nation, extract(year from b.l_shipdate) as l_year, b.l_extendedprice * (1 - b.l_discount) as volume from s_supplier_star a, lo_lineitem_orders_star b, c_customer_star c where a.s_suppkey = b.l_suppkey and c.c_custkey = b.o_custkey and ( (a.n_name = 'FRANCE' and c.n_name = 'GERMANY') or (a.n_name = 'GERMANY' and c.n_name = 'FRANCE') ) and b.l_shipdate between date '1995-01-01' and date '1996-12-31' ) as shipping group by supp_nation, cust_nation, l_year order by supp_nation, cust_nation, l_year;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',supp_nation, cust_nation, l_year, sum(volume) as revenue from ( select a.n_name as supp_nation, c.n_name as cust_nation, extract(year from b.l_shipdate) as l_year, b.l_extendedprice * (1 - b.l_discount) as volume from s_supplier_star a, lo_lineitem_orders_star b, c_customer_star c where a.s_suppkey = b.l_suppkey and c.c_custkey = b.o_custkey and ( (a.n_name = 'FRANCE' and c.n_name = 'GERMANY') or (a.n_name = 'GERMANY' and c.n_name = 'FRANCE') ) and b.l_shipdate between date '1995-01-01' and date '1996-12-31' ) as shipping group by supp_nation, cust_nation, l_year order by supp_nation, cust_nation, l_year;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 7."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -63,7 +63,7 @@ echo ""|& tee -a $resultPath
 query8 () {
 echo "--------------------------------------STARTED QUERY 8."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share from ( select extract(year from o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume, b.n_name as nation from p_part_star a, s_supplier_star b, lo_lineitem_orders_star c, c_customer_star d where a.p_partkey = c.l_partkey and b.s_suppkey = c.l_suppkey and c.o_custkey = d.c_custkey and d.r_name = 'AMERICA' and c.o_orderdate between date '1995-01-01' and date '1996-12-31' and a.p_type = 'ECONOMY ANODIZED STEEL' ) as all_nations group by o_year order by o_year;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share from ( select extract(year from o_orderdate) as o_year, l_extendedprice * (1-l_discount) as volume, b.n_name as nation from p_part_star a, s_supplier_star b, lo_lineitem_orders_star c, c_customer_star d where a.p_partkey = c.l_partkey and b.s_suppkey = c.l_suppkey and c.o_custkey = d.c_custkey and d.r_name = 'AMERICA' and c.o_orderdate between date '1995-01-01' and date '1996-12-31' and a.p_type = 'ECONOMY ANODIZED STEEL' ) as all_nations group by o_year order by o_year;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 8."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -72,7 +72,7 @@ echo ""|& tee -a $resultPath
 query9 () {
 echo "--------------------------------------STARTED QUERY 9."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select nation, o_year, sum(amount) as sum_profit from ( select b.n_name as nation, extract(year from c.o_orderdate) as o_year, c.l_extendedprice * (1 - c.l_discount) - d.ps_supplycost * c.l_quantity as amount from p_part_star a, s_supplier_star b, lo_lineitem_orders_star c, ps_partsupp_star d where b.s_suppkey = c.l_suppkey and d.ps_suppkey = c.l_suppkey and d.ps_partkey = c.l_partkey and a.p_partkey = c.l_partkey and a.p_name like '%green%' ) as profit group by nation, o_year order by nation, o_year desc;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',nation, o_year, sum(amount) as sum_profit from ( select b.n_name as nation, extract(year from c.o_orderdate) as o_year, c.l_extendedprice * (1 - c.l_discount) - d.ps_supplycost * c.l_quantity as amount from p_part_star a, s_supplier_star b, lo_lineitem_orders_star c, ps_partsupp_star d where b.s_suppkey = c.l_suppkey and d.ps_suppkey = c.l_suppkey and d.ps_partkey = c.l_partkey and a.p_partkey = c.l_partkey and a.p_name like '%green%' ) as profit group by nation, o_year order by nation, o_year desc;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 9."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
@@ -81,7 +81,7 @@ echo ""|& tee -a $resultPath
 query10 () {
 echo "--------------------------------------STARTED QUERY 10."$i" ---------------------------------"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
-/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select a.c_custkey, a.c_name, sum(b.l_extendedprice * (1 - b.l_discount)) as revenue, a.c_acctbal, a.n_name, a.c_address, a.c_phone, a.c_comment from c_customer_star a, lo_lineitem_orders_star b where a.c_custkey = b.o_custkey and b.o_orderdate >= date '1993-10-01' and b.o_orderdate < date '1993-10-01' + interval '3' month and b.l_returnflag = 'R' group by a.c_custkey, a.c_name, a.c_acctbal, a.c_phone, a.n_name, a.c_address, a.c_comment order by revenue desc limit 20;"|& tee -a $resultPath
+/usr/local/bin/presto --server coordinator:8080 --catalog hive --schema default --execute "select '$mode.$m.$i',a.c_custkey, a.c_name, sum(b.l_extendedprice * (1 - b.l_discount)) as revenue, a.c_acctbal, a.n_name, a.c_address, a.c_phone, a.c_comment from c_customer_star a, lo_lineitem_orders_star b where a.c_custkey = b.o_custkey and b.o_orderdate >= date '1993-10-01' and b.o_orderdate < date '1993-10-01' + interval '3' month and b.l_returnflag = 'R' group by a.c_custkey, a.c_name, a.c_acctbal, a.c_phone, a.n_name, a.c_address, a.c_comment order by revenue desc limit 20;"|& tee -a $resultPath
 echo $(date '+%d/%m/%Y %H:%M:%S.%3N')|& tee -a $resultPath
 echo "--------------------------------------Finished QUERY 10."$i"--------------------------------"|& tee -a $resultPath
 echo ""|& tee -a $resultPath
