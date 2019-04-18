@@ -2,7 +2,7 @@
 
 if [ ! -d $1 ]; then
 if [ "$1" = "create" ]; then
-docker volume create mydata -d local-persist -o mountpoint=/data/mydata --name mydata
+docker volume create mydata -d local-persist -o mountpoint=/data/mydata
 docker volume create hadoop_datanode1 -d local-persist -o mountpoint=/data/hadoop_datanode1
 docker volume create hadoop_datanode2 -d local-persist -o mountpoint=/data/hadoop_datanode2
 docker volume create hadoop_datanode3 -d local-persist -o mountpoint=/data/hadoop_datanode3
@@ -13,6 +13,7 @@ docker volume create hive_metastore -d local-persist -o mountpoint=/data/hive_me
 docker volume create hadoop_resourcemanager -d local-persist -o mountpoint=/data/hadoop_resourcemanager
 docker volume create hadoop_nodemanager1 -d local-persist -o mountpoint=/data/hadoop_nodemanager1
 docker volume create hadoop_nodemanager2 -d local-persist -o mountpoint=/data/hadoop_nodemanager2
+docker volume create presto -d local-persist -o mountpoint=/data/presto
 fi
 
 if [ "$1" = "delete" ]; then
