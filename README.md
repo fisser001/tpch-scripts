@@ -8,7 +8,7 @@ Before using the script make sure that the execution rights are set.
 The respective scipts are divided into the following subdirectories:
 
 ## data
-Contains a script for loading the data from the NAS into the benchmarking environment. 
+Contains a script for loading the benchmarking data from the NAS into the benchmarking environment. 
 
 ## docker 
 Contains a script to create the docker volumes which have been used by the docker containers within this benchmark.
