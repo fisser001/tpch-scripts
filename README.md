@@ -1,9 +1,9 @@
 # tpch-scripts
 This repository contains all scripts to perform the benchmark described in this master thesis.
 
-All script contain a information which describe how the script can be used. Just try to execute the script and the relevant information are shown.
+All script contain information which describe how the script can be used. Just try to execute the script and the relevant information are shown.
 
-Before using the script make sure that the execution right are set. 
+Before using the script make sure that the execution rights are set. 
 
 The respective scipts are divided into the following subdirectories:
 
